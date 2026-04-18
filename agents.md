@@ -35,6 +35,8 @@ The app is not a generic enterprise ticketing tool.
 
 It is a personal-growth-oriented board where tasks represent learning activities, milestones, or practice goals tied to specific skills.
 
+Accessibility is a project-level quality goal, and the team should make an active effort to keep the product aligned with Section 508 accessibility expectations.
+
 Examples of task types may include:
 
 - complete a lesson
@@ -51,6 +53,10 @@ Based on current project knowledge, the app should support:
 - organizing tickets in swim lanes
 - moving tickets between swim lanes
 - using the board to reflect learning progress over time
+- each swim lane should render as a container with a visible title/header section and a separate droppable body section
+- the swim lane title currently uses the lane `id` as its display text
+- the current learning board implementation uses five swim lanes
+- the current learning swim lane titles are `Selected for Learning`, `Learning in Progress`, `Learning Completed`, `Learning in Verification`, and `Learning Verified`
 
 ## Technical Direction
 
@@ -61,6 +67,15 @@ Current frontend decision:
 - the `client` portion of the project now has its own scoped `AGENTS.md` file
 - that file should be treated as local guidance for agent work within the `client` app
 - its contents have not been reviewed yet and should only be inspected if the user explicitly asks
+- the `client` app uses `pnpm` as its package manager
+- unit tests are set up with `Jest` using `next/jest` and React Testing Library
+- shared Sass design variables are currently defined in `client/src/styles/_variables.scss`
+- style modules that need shared breakpoint tokens should import the shared Sass variables file directly
+- the current responsive direction is mobile-first, with swim lanes stacked vertically by default and switching to a horizontal row at the tablet breakpoint
+- swim lane title areas should keep a consistent minimum header height so varying title lengths do not create mismatched header rows
+- current UI semantics use a page-level `main`, swim lanes as `section` elements, and swim lane titles as heading content inside a `header`
+- swim lane droppable areas should have explicit accessible labels describing them as swim lane drop areas
+- current swim lane test coverage includes page-level lane count/order/accessibility checks and component-level `Droppable` semantic/accessibility checks
 
 ## Project Management
 
@@ -98,6 +113,10 @@ Agent operating constraint for this project:
 
 - do not write code unless the user explicitly asks
 - do not run commands unless the user explicitly asks
+- whenever editing markup or rendered HTML structure, accessibility semantics should be reviewed and updated as part of the change
+- aria labels, roles, headings, and related accessibility attributes should be kept meaningful and in sync with the UI
+- accessibility decisions should aim toward Section 508 compliance wherever practical
+- exported components and functions should use concise, sensible TSDoc comments at their declaration headers
 
 ## Known Unknowns
 
@@ -123,3 +142,14 @@ These details are not defined yet:
 - Recorded the collaboration rule that no code or commands should be written or run unless explicitly requested by the user.
 - Recorded that the `client` app has its own scoped `AGENTS.md`, likely for app-specific agent guidance.
 - Recorded the TechUp YouTrack project link for project management: `https://techup.youtrack.cloud/projects/TEC`.
+- Recorded that swim lanes should render as equal-width columns with a title/header area and a separate droppable section, using the lane `id` as the visible title.
+- Recorded that the current learning board has five swim lanes with the titles `Selected for Learning`, `Learning in Progress`, `Learning Completed`, `Learning in Verification`, and `Learning Verified`.
+- Recorded that the `client` app uses `pnpm` and now has a Jest + React Testing Library setup for unit tests.
+- Recorded that shared breakpoint values are now being handled through the shared Sass variables file `client/src/styles/_variables.scss`.
+- Recorded that swim lane headers should maintain a consistent minimum height to reduce mismatched title-row heights when titles wrap differently.
+- Recorded the current semantic structure: learning page content uses `main`, each swim lane is a `section`, and each lane title is rendered as heading content inside a `header`.
+- Recorded that swim lane droppable areas now use explicit accessible labels describing each lane as a swim lane drop area.
+- Recorded the standing rule that any markup edits should include an accessibility pass so aria labels, roles, headings, and related semantics stay meaningful and current.
+- Recorded that the project should make an active effort to be Section 508 compliant.
+- Recorded that swim lane unit tests now cover lane count, heading order, drop-area accessibility labels, and `Droppable` component semantics.
+- Recorded the convention that exported components and functions should include concise, sensible TSDoc comments at their declaration headers.
