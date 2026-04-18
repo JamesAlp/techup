@@ -76,6 +76,8 @@ Current frontend decision:
 - current UI semantics use a page-level `main`, swim lanes as `section` elements, and swim lane titles as heading content inside a `header`
 - swim lane droppable areas should have explicit accessible labels describing them as swim lane drop areas
 - current swim lane test coverage includes page-level lane count/order/accessibility checks and component-level `Droppable` semantic/accessibility checks
+- pull request CI is configured at the repository root with GitHub Actions so it can expand beyond the `client` app over time
+- the current pull request workflow runs the `client` unit test suite with `pnpm`
 
 ## Project Management
 
@@ -153,3 +155,4 @@ These details are not defined yet:
 - Recorded that the project should make an active effort to be Section 508 compliant.
 - Recorded that swim lane unit tests now cover lane count, heading order, drop-area accessibility labels, and `Droppable` component semantics.
 - Recorded the convention that exported components and functions should include concise, sensible TSDoc comments at their declaration headers.
+- Recorded that a root GitHub Actions pull request workflow now runs the `client` unit tests with `pnpm`.
