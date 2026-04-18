@@ -1,20 +1,20 @@
 import {ReactNode} from 'react';
 import {useDroppable} from '@dnd-kit/react';
-import styles from './Droppable.module.css';
+import styles from './LearningSwimlane.module.css';
 
-export type DroppableTarget = {
+export type LearningSwimlaneProps = {
   id: string;
   title: string;
   children?: ReactNode;
 };
 
 /**
- * Renders a labeled swim lane with an accessible droppable region.
+ * Renders a labeled learning swim lane with an accessible drop area.
  *
  * @param props - The swim lane identifier, visible title, and lane content.
- * @returns A semantic swim lane section containing a titled drop area.
+ * @returns A semantic learning swim lane section containing a titled drop area.
  */
-export default function Droppable({id, title, children}: DroppableTarget) {
+export default function LearningSwimlane({id, title, children}: LearningSwimlaneProps) {
   const {ref} = useDroppable({
     id,
   });
@@ -31,7 +31,7 @@ export default function Droppable({id, title, children}: DroppableTarget) {
       <div
         id={id}
         ref={ref}
-        className={styles.droppable}
+        className={styles.learningSwimlaneBody}
         role="group"
         aria-label={dropAreaLabel}
       >

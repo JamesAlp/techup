@@ -1,17 +1,17 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import Droppable from './Droppable';
+import LearningSwimlane from './LearningSwimlane';
 
 jest.mock('@dnd-kit/react', () => ({
   useDroppable: () => ({ ref: jest.fn() }),
 }));
 
-describe('Droppable', () => {
-  it('renders a swim lane section with a heading title', () => {
+describe('LearningSwimlane', () => {
+  it('renders a learning swim lane section with a heading title', () => {
     const { container } = render(
-      <Droppable id="A" title="Selected for Learning">
+      <LearningSwimlane id="A" title="Selected for Learning">
         Lane content
-      </Droppable>
+      </LearningSwimlane>
     );
 
     const section = container.querySelector('section');
@@ -25,11 +25,11 @@ describe('Droppable', () => {
     expect(heading).toBeInTheDocument();
   });
 
-  it('renders a labeled droppable area for assistive technology', () => {
+  it('renders a labeled swim lane drop area for assistive technology', () => {
     render(
-      <Droppable id="B" title="Learning in Progress">
+      <LearningSwimlane id="B" title="Learning in Progress">
         Lane content
-      </Droppable>
+      </LearningSwimlane>
     );
 
     expect(

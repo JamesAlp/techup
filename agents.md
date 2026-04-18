@@ -53,7 +53,7 @@ Based on current project knowledge, the app should support:
 - organizing tickets in swim lanes
 - moving tickets between swim lanes
 - using the board to reflect learning progress over time
-- each swim lane should render as a container with a visible title/header section and a separate droppable body section
+- each swim lane should render as a container with a visible title/header section and a separate swim lane body section
 - the swim lane title currently uses the lane `id` as its display text
 - the current learning board implementation uses five swim lanes
 - the current learning swim lane titles are `Selected for Learning`, `Learning in Progress`, `Learning Completed`, `Learning in Verification`, and `Learning Verified`
@@ -74,10 +74,12 @@ Current frontend decision:
 - the current responsive direction is mobile-first, with swim lanes stacked vertically by default and switching to a horizontal row at the tablet breakpoint
 - swim lane title areas should keep a consistent minimum header height so varying title lengths do not create mismatched header rows
 - current UI semantics use a page-level `main`, swim lanes as `section` elements, and swim lane titles as heading content inside a `header`
-- swim lane droppable areas should have explicit accessible labels describing them as swim lane drop areas
-- current swim lane test coverage includes page-level lane count/order/accessibility checks and component-level `Droppable` semantic/accessibility checks
+- swim lane drop areas should have explicit accessible labels describing them as swim lane drop areas
+- current swim lane test coverage includes page-level lane count/order/accessibility checks and component-level `LearningSwimlane` semantic/accessibility checks
 - pull request CI is configured at the repository root with GitHub Actions so it can expand beyond the `client` app over time
 - the current pull request workflow runs the `client` unit test suite with `pnpm`
+- internal swim lane naming should use `LearningSwimlane` terminology instead of `Droppable`, and component prop types should use the `LearningSwimlaneProps` name
+- internal task naming should use `LearningTask` terminology instead of `Draggable`
 
 ## Project Management
 
@@ -144,15 +146,17 @@ These details are not defined yet:
 - Recorded the collaboration rule that no code or commands should be written or run unless explicitly requested by the user.
 - Recorded that the `client` app has its own scoped `AGENTS.md`, likely for app-specific agent guidance.
 - Recorded the TechUp YouTrack project link for project management: `https://techup.youtrack.cloud/projects/TEC`.
-- Recorded that swim lanes should render as equal-width columns with a title/header area and a separate droppable section, using the lane `id` as the visible title.
+- Recorded that swim lanes should render as equal-width columns with a title/header area and a separate swim lane body section, using the lane `id` as the visible title.
 - Recorded that the current learning board has five swim lanes with the titles `Selected for Learning`, `Learning in Progress`, `Learning Completed`, `Learning in Verification`, and `Learning Verified`.
 - Recorded that the `client` app uses `pnpm` and now has a Jest + React Testing Library setup for unit tests.
 - Recorded that shared breakpoint values are now being handled through the shared Sass variables file `client/src/styles/_variables.scss`.
 - Recorded that swim lane headers should maintain a consistent minimum height to reduce mismatched title-row heights when titles wrap differently.
 - Recorded the current semantic structure: learning page content uses `main`, each swim lane is a `section`, and each lane title is rendered as heading content inside a `header`.
-- Recorded that swim lane droppable areas now use explicit accessible labels describing each lane as a swim lane drop area.
+- Recorded that swim lane drop areas now use explicit accessible labels describing each lane as a swim lane drop area.
 - Recorded the standing rule that any markup edits should include an accessibility pass so aria labels, roles, headings, and related semantics stay meaningful and current.
 - Recorded that the project should make an active effort to be Section 508 compliant.
-- Recorded that swim lane unit tests now cover lane count, heading order, drop-area accessibility labels, and `Droppable` component semantics.
+- Recorded that swim lane unit tests now cover lane count, heading order, drop-area accessibility labels, and `LearningSwimlane` component semantics.
 - Recorded the convention that exported components and functions should include concise, sensible TSDoc comments at their declaration headers.
 - Recorded that a root GitHub Actions pull request workflow now runs the `client` unit tests with `pnpm`.
+- Recorded the naming decision to replace internal `Droppable` terminology with `LearningSwimlane`, using `LearningSwimlaneProps` for component prop types.
+- Recorded the naming decision to replace internal `Draggable` terminology with `LearningTask`.

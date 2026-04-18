@@ -2,8 +2,8 @@
 
 import { DragDropProvider } from "@dnd-kit/react";
 import { useState } from "react";
-import { Draggable } from "@/components/swimlane/Draggable";
-import Droppable, { DroppableTarget } from "@/components/swimlane/Droppable";
+import LearningTask, { LearningTaskProps } from "@/components/swimlane/LearningTask";
+import LearningSwimlane, { LearningSwimlaneProps } from "@/components/swimlane/LearningSwimlane";
 import styles from "./page.module.scss";
 
 /**
@@ -12,7 +12,7 @@ import styles from "./page.module.scss";
  * @returns The learning workflow board for skill-progress tracking.
  */
 export default function Learning() {
-  const droppableTargets: DroppableTarget[] = [
+  const learningSwimlanes: LearningSwimlaneProps[] = [
     {
       id: 'A',
       title: 'Selected for Learning'
@@ -34,29 +34,47 @@ export default function Learning() {
       title: 'Learning Verified'
     },
   ];
-  const [target, setTarget] = useState(droppableTargets[0].id);
-  const draggable = (
-    <Draggable id="draggable">Drag me</Draggable>
-  );
+  const learningTasks: LearningTaskProps[] = [
+    {
+      id: 'A',
+      title: 'React.js',
+      target: 'A'
+    }
+  ];
 
   return (
   <DragDropProvider
       onDragEnd={(event) => {
         if (event.canceled) return;
 
-        setTarget(event.operation.target?.id as unknown as any);
+        // todo: fix in future with dynamic swimlane switching logic
+        // setTarget(event.operation.target?.id as unknown as any);
       }}
     >
       <main>
         <div className={styles.board}>
-          {droppableTargets.map((droppableTarget) => (
-            <Droppable
-              key={droppableTarget.id}
-              id={droppableTarget.id}
-              title={droppableTarget.title}
+          {learningSwimlanes.map((learningSwimlane) => (
+            <LearningSwimlane
+              key={learningSwimlane.id}
+              id={learningSwimlane.id}
+              title={learningSwimlane.title}
             >
-              {target === droppableTarget.id ? draggable : `Empty`}
-            </Droppable>
+              {
+                learningTasks.map((learningTask, index) => {
+                  if (learningTask.target !== learningSwimlane.id) return;
+
+                  return (
+                    <LearningTask
+                      key={index}
+                      id={learningTask.id}
+                      title={learningTask.title}
+                      target={learningTask.target} />
+                  );
+                })
+              }
+
+              {/* {target === learningSwimlane.id ? learningTask : `Empty`} */}
+            </LearningSwimlane>
           ))}
         </div>
       </main>
