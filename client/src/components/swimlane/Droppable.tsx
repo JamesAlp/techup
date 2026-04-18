@@ -19,7 +19,7 @@ export default function Droppable({id, title, children}: DroppableTarget) {
     id,
   });
   const titleId = `swimlane-title-${id}`;
-  const dropAreaLabel = `${title} swim lane drop area`;
+  const dropAreaLabel = `${title} swimlane drop area`;
 
   return (
     <section className={styles.swimLane} aria-labelledby={titleId}>
