@@ -68,6 +68,13 @@ Current frontend decision:
 - that file should be treated as local guidance for agent work within the `client` app
 - its contents have not been reviewed yet and should only be inspected if the user explicitly asks
 - the `client` app uses `pnpm` as its package manager
+- `@mui/material` is installed in the `client` app and is being used for modal UI primitives
+- the current `LearningTaskModal` implementation is intentionally bare minimum and uses a single component file with no barrel export
+- `LearningTaskItem` now includes `title`, `description`, `learningResource`, and `progress` values that seed the current modal inputs as defaults
+- the current learning task modal uses MUI form controls: `TextField` for task text values and `Slider` for progress
+- the learning task modal currently treats the task title field as required
+- the learning task modal currently includes MUI `Cancel` and `Save` action buttons, with both actions closing the modal until task persistence is implemented
+- the learning task modal inputs and actions are wrapped in a form so browser validation can block save when required fields are empty
 - unit tests are set up with `Jest` using `next/jest` and React Testing Library
 - shared Sass design variables are currently defined in `client/src/styles/_variables.scss`
 - style modules that need shared breakpoint tokens should import the shared Sass variables file directly
@@ -78,6 +85,7 @@ Current frontend decision:
 - current swim lane test coverage includes page-level lane count/order/accessibility checks and component-level `LearningSwimlane` semantic/accessibility checks
 - pull request CI is configured at the repository root with GitHub Actions so it can expand beyond the `client` app over time
 - the current pull request workflow runs the `client` unit test suite with `pnpm`
+- the repository now includes a root `.vscode/settings.json` that enables format-on-save and ESLint fix-on-save for the `client` app workspace
 - internal swim lane naming should use `LearningSwimlane` terminology instead of `Droppable`, and component prop types should use the `LearningSwimlaneProps` name
 - internal task naming should use `LearningTask` terminology instead of `Draggable`
 
@@ -149,6 +157,13 @@ These details are not defined yet:
 - Recorded that swim lanes should render as equal-width columns with a title/header area and a separate swim lane body section, using the lane `id` as the visible title.
 - Recorded that the current learning board has five swim lanes with the titles `Selected for Learning`, `Learning in Progress`, `Learning Completed`, `Learning in Verification`, and `Learning Verified`.
 - Recorded that the `client` app uses `pnpm` and now has a Jest + React Testing Library setup for unit tests.
+- Recorded that the `client` app has a `client/src/components/learning/LearningTaskModal` component directory and now includes a basic reusable MUI modal component.
+- Recorded that the current `LearningTaskModal` is intentionally minimal and kept as a single component file without a barrel export.
+- Recorded that the current learning task modal uses a centered MUI `Box` with separate title and content areas, and seeds task title, description, learning resource, and progress inputs from `LearningTaskItem` default values.
+- Recorded that the current learning task modal now renders those default values through MUI `TextField` and `Slider` controls.
+- Recorded that the current learning task modal marks the title field as required.
+- Recorded that the current learning task modal includes `Cancel` and `Save` action buttons and currently uses them to close the modal.
+- Recorded that the current learning task modal now wraps its inputs and actions in a form so the required title field can trigger native validation on save.
 - Recorded that shared breakpoint values are now being handled through the shared Sass variables file `client/src/styles/_variables.scss`.
 - Recorded that swim lane headers should maintain a consistent minimum height to reduce mismatched title-row heights when titles wrap differently.
 - Recorded the current semantic structure: learning page content uses `main`, each swim lane is a `section`, and each lane title is rendered as heading content inside a `header`.
@@ -158,5 +173,6 @@ These details are not defined yet:
 - Recorded that swim lane unit tests now cover lane count, heading order, drop-area accessibility labels, and `LearningSwimlane` component semantics.
 - Recorded the convention that exported components and functions should include concise, sensible TSDoc comments at their declaration headers.
 - Recorded that a root GitHub Actions pull request workflow now runs the `client` unit tests with `pnpm`.
+- Recorded that the repository now includes root VS Code workspace settings to run editor formatting on save and apply ESLint fixes on save for the `client` app.
 - Recorded the naming decision to replace internal `Droppable` terminology with `LearningSwimlane`, using `LearningSwimlaneProps` for component prop types.
 - Recorded the naming decision to replace internal `Draggable` terminology with `LearningTask`.
