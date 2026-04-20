@@ -1,10 +1,11 @@
 'use client';
 
 import { DragDropProvider } from "@dnd-kit/react";
-import { useState } from "react";
-import LearningTask, { LearningTaskProps } from "@/components/swimlane/LearningTask";
-import LearningSwimlane, { LearningSwimlaneProps } from "@/components/swimlane/LearningSwimlane";
 import styles from "./page.module.scss";
+import LearningSwimlane, { LearningSwimlaneProps } from "@/components/learning/LearningSwimlane/LearningSwimlane";
+import LearningTaskModal, { LearningTaskModalState } from "@/components/learning/LearningTaskModal/LearningTaskModal";
+import { useMemo, useState } from "react";
+import LearningTask, { LearningTaskItem } from "@/components/learning/LearningTask/LearningTask";
 
 /**
  * Renders the learning board route with the current swim lane collection.
@@ -34,24 +35,48 @@ export default function Learning() {
       title: 'Learning Verified'
     },
   ];
-  const learningTasks: LearningTaskProps[] = [
+  const learningTaskItems: LearningTaskItem[] = [
     {
       id: 'A',
       title: 'React.js',
-      target: 'A'
-    }
+      description: 'Complete the core React lessons.',
+      learningResource: 'Udemy React course',
+      progress: 25,
+      swimlane: 'A',
+    },
+    {
+      id: 'A',
+      title: 'React.js 2',
+      description: 'Complete the core React lessons.',
+      learningResource: 'Udemy React course',
+      progress: 25,
+      swimlane: 'A',
+    },
   ];
+  const [modalState, setModalState] = useState<LearningTaskModalState>({
+    open: false,
+    learningTaskId: undefined,
+  });
+  const setSelectedTaskId = (id: string) => {
+    setModalState({
+      open: true,
+      learningTaskId: id
+    });
+  };
+  const selectedLearningTask = useMemo(() =>
+    learningTaskItems.find((learningTask) => learningTask.id === modalState.learningTaskId
+    ), [modalState.learningTaskId]);
 
   return (
-  <DragDropProvider
-      onDragEnd={(event) => {
-        if (event.canceled) return;
+    <main>
+      <DragDropProvider
+        onDragEnd={(event) => {
+          if (event.canceled) return;
 
-        // todo: fix in future with dynamic swimlane switching logic
-        // setTarget(event.operation.target?.id as unknown as any);
-      }}
-    >
-      <main>
+          // todo: fix in future with dynamic swimlane switching logic
+          // setTarget(event.operation.target?.id as unknown as any);
+        }}
+      >
         <div className={styles.board}>
           {learningSwimlanes.map((learningSwimlane) => (
             <LearningSwimlane
@@ -60,24 +85,32 @@ export default function Learning() {
               title={learningSwimlane.title}
             >
               {
-                learningTasks.map((learningTask, index) => {
-                  if (learningTask.target !== learningSwimlane.id) return;
+                learningTaskItems.map((learningTaskItem, index) => {
+                  if (learningTaskItem.swimlane !== learningSwimlane.id) return;
 
                   return (
                     <LearningTask
                       key={index}
-                      id={learningTask.id}
-                      title={learningTask.title}
-                      target={learningTask.target} />
+                      learningTaskItem={learningTaskItem}
+                      setSelectedTaskId={setSelectedTaskId} />
                   );
                 })
               }
-
-              {/* {target === learningSwimlane.id ? learningTask : `Empty`} */}
             </LearningSwimlane>
           ))}
         </div>
-      </main>
-    </DragDropProvider>
+      </DragDropProvider>
+
+      <LearningTaskModal
+        open={modalState.open}
+        learningTask={selectedLearningTask}
+        onClose={() => {
+          setModalState({
+            open: false,
+            learningTaskId: undefined,
+          });
+        }}
+      />
+    </main>
   );
 }
