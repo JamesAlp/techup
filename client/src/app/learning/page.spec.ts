@@ -9,7 +9,7 @@ jest.mock('@dnd-kit/react', () => ({
 }));
 
 describe('Learning page', () => {
-  const expectedTargets = [
+  const expectedLearningSwimlanes = [
     { id: 'A', title: 'Selected for Learning' },
     { id: 'B', title: 'Learning in Progress' },
     { id: 'C', title: 'Learning Completed' },
@@ -17,14 +17,14 @@ describe('Learning page', () => {
     { id: 'E', title: 'Learning Verified' },
   ];
 
-  it('mounts the five current droppable targets with their titles', () => {
+  it('mounts the five current learning swim lanes with their titles', () => {
     const { container } = render(React.createElement(Learning));
 
-    expect(expectedTargets).toHaveLength(5);
+    expect(expectedLearningSwimlanes).toHaveLength(5);
 
-    for (const target of expectedTargets) {
-      expect(screen.getByText(target.title)).toBeInTheDocument();
-      expect(container.querySelector(`[id="${target.id}"]`)).toBeInTheDocument();
+    for (const learningSwimlane of expectedLearningSwimlanes) {
+      expect(screen.getByText(learningSwimlane.title)).toBeInTheDocument();
+      expect(container.querySelector(`[id="${learningSwimlane.id}"]`)).toBeInTheDocument();
     }
   });
 
@@ -33,9 +33,9 @@ describe('Learning page', () => {
 
     const headings = screen.getAllByRole('heading', { level: 2 });
 
-    expect(headings).toHaveLength(expectedTargets.length);
+    expect(headings).toHaveLength(expectedLearningSwimlanes.length);
     expect(headings.map((heading) => heading.textContent)).toEqual(
-      expectedTargets.map((target) => target.title)
+      expectedLearningSwimlanes.map((learningSwimlane) => learningSwimlane.title)
     );
   });
 
@@ -44,12 +44,12 @@ describe('Learning page', () => {
 
     const dropAreas = screen.getAllByRole('group');
 
-    expect(dropAreas).toHaveLength(expectedTargets.length);
+    expect(dropAreas).toHaveLength(expectedLearningSwimlanes.length);
 
-    for (const target of expectedTargets) {
+    for (const learningSwimlane of expectedLearningSwimlanes) {
       expect(
         screen.getByRole('group', {
-          name: `${target.title} swim lane drop area`,
+          name: `${learningSwimlane.title} swim lane drop area`,
         })
       ).toBeInTheDocument();
     }
