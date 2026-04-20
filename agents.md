@@ -85,6 +85,11 @@ Current frontend decision:
 - current swim lane test coverage includes page-level lane count/order/accessibility checks and component-level `LearningSwimlane` semantic/accessibility checks
 - pull request CI is configured at the repository root with GitHub Actions so it can expand beyond the `client` app over time
 - the current pull request workflow runs the `client` unit test suite with `pnpm`
+- the current pull request workflow file is `.github/workflows/pull-request.yml`
+- the current pull request workflow runs on `opened`, `synchronize`, and `reopened` pull request events
+- the current pull request workflow uses `ubuntu-latest`, `pnpm` version `10`, and `Node.js` version `22`
+- the current pull request workflow installs dependencies in the `client` directory with `pnpm install --frozen-lockfile`
+- the current pull request workflow runs tests from the `client` directory with `pnpm exec jest --runInBand`
 - the repository now includes a root `.vscode/settings.json` that enables format-on-save and ESLint fix-on-save for the `client` app workspace
 - internal swim lane naming should use `LearningSwimlane` terminology instead of `Droppable`, and component prop types should use the `LearningSwimlaneProps` name
 - internal task naming should use `LearningTask` terminology instead of `Draggable`
@@ -139,6 +144,7 @@ These are current assumptions and should be revised as the project becomes more 
 - swim lanes likely represent stages of progress
 - tickets likely represent actionable learning items
 - the app may eventually expand as more requirements are revealed
+- the root `README.md` should be kept updated when contributor-facing project, setup, testing, CI, architecture, or product-state information changes materially
 
 ## Collaboration Rules
 
@@ -180,6 +186,11 @@ These details are not defined yet:
 - Recorded that swim lanes should render as equal-width columns with a title/header area and a separate swim lane body section, using the lane `id` as the visible title.
 - Recorded that the current learning board has five swim lanes with the titles `Selected for Learning`, `Learning in Progress`, `Learning Completed`, `Learning in Verification`, and `Learning Verified`.
 - Recorded that the `client` app uses `pnpm` and now has a Jest + React Testing Library setup for unit tests.
+- Recorded that the pull request workflow file is `.github/workflows/pull-request.yml`.
+- Recorded that the pull request workflow currently runs on `opened`, `synchronize`, and `reopened` pull request events.
+- Recorded that the pull request workflow currently uses `ubuntu-latest`, `pnpm` version `10`, and `Node.js` version `22`.
+- Recorded that the pull request workflow installs `client` dependencies with `pnpm install --frozen-lockfile`.
+- Recorded that the pull request workflow runs tests from the `client` directory with `pnpm exec jest --runInBand`.
 - Recorded that the `client` app has a `client/src/components/learning/LearningTaskModal` component directory and now includes a basic reusable MUI modal component.
 - Recorded that the current `LearningTaskModal` is intentionally minimal and kept as a single component file without a barrel export.
 - Recorded that the current learning task modal uses a centered MUI `Box` with separate title and content areas, and seeds task title, description, learning resource, and progress inputs from `LearningTaskItem` default values.
@@ -205,6 +216,7 @@ These details are not defined yet:
 - Recorded the standing rule that forms with required fields should have unit-test coverage for blocked submission when required inputs are empty.
 - Recorded that the learning task modal now exposes explicit dialog semantics with an accessible heading title.
 - Recorded that current component unit tests now include accessibility assertions alongside rendering and interaction coverage.
+- Recorded that the root `README.md` now documents the current project state and should be updated when contributor-facing repository or product information changes materially.
 - Recorded that the current mock learning board data now includes multiple realistic sample tasks across all five swimlanes to better represent a real board state.
 - Recorded that the client app now has a custom MUI `smd` breakpoint at `750px` between `sm` and `md`.
 - Recorded that the learning page now uses `smd` instead of `sm` for its responsive spacing and row-layout breakpoint.
