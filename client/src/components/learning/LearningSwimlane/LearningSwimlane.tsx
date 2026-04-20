@@ -1,6 +1,7 @@
-import {ReactNode} from 'react';
-import {useDroppable} from '@dnd-kit/react';
-import styles from './LearningSwimlane.module.css';
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import { useDroppable } from '@dnd-kit/react';
+import { ReactNode } from 'react';
 
 export type LearningSwimlaneProps = {
   id: string;
@@ -14,29 +15,64 @@ export type LearningSwimlaneProps = {
  * @param props - The swim lane identifier, visible title, and lane content.
  * @returns A semantic learning swim lane section containing a titled drop area.
  */
-export default function LearningSwimlane({id, title, children}: LearningSwimlaneProps) {
-  const {ref} = useDroppable({
+export default function LearningSwimlane({
+  id,
+  title,
+  children,
+}: LearningSwimlaneProps) {
+  const { ref } = useDroppable({
     id,
   });
   const titleId = `swimlane-title-${id}`;
   const dropAreaLabel = `${title} swim lane drop area`;
 
   return (
-    <section className={styles.swimLane} aria-labelledby={titleId}>
-      <header className={styles.title}>
-        <h2 id={titleId} className={styles.titleText}>
+    <Box
+      component="section"
+      aria-labelledby={titleId}
+      sx={{
+        display: 'flex',
+        flex: '1 1 0',
+        minWidth: 0,
+        flexDirection: 'column',
+      }}
+    >
+      <Box
+        component="header"
+        sx={{
+          display: 'flex',
+          minHeight: '4.25rem',
+          alignItems: 'center',
+          px: 0.625,
+          py: 0.5,
+        }}
+      >
+        <Typography
+          id={titleId}
+          component="h2"
+          variant="subtitle1"
+          sx={{ fontWeight: 700, fontSize: { xs: '0.92rem', md: '0.88rem', lg: '0.96rem' } }}
+        >
           {title}
-        </h2>
-      </header>
-      <div
+        </Typography>
+      </Box>
+      <Box
         id={id}
         ref={ref}
-        className={styles.learningSwimlaneBody}
         role="group"
         aria-label={dropAreaLabel}
+        sx={{
+          display: 'flex',
+          minHeight: 320,
+          flex: 1,
+          flexDirection: 'column',
+          gap: 1,
+          px: 0.5,
+          pb: 0.5,
+        }}
       >
         {children}
-      </div>
-    </section>
+      </Box>
+    </Box>
   );
 }

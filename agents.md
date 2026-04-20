@@ -88,6 +88,27 @@ Current frontend decision:
 - the repository now includes a root `.vscode/settings.json` that enables format-on-save and ESLint fix-on-save for the `client` app workspace
 - internal swim lane naming should use `LearningSwimlane` terminology instead of `Droppable`, and component prop types should use the `LearningSwimlaneProps` name
 - internal task naming should use `LearningTask` terminology instead of `Draggable`
+- the current learning board page is using MUI layout primitives for its page shell, swimlanes, and task cards
+- current learning task cards surface the task description directly on the board for quicker scanning
+- the current learning page and swimlane presentation no longer rely on their prior local CSS module files because the board styling is now driven directly through MUI components
+- the current learning swimlane headers no longer show task-count badges, and the header text is slightly smaller to behave better at tablet sizes
+- the current learning task modal styling is now visually aligned with the task card previews through shared rounded corners, border treatment, and softer progress control styling
+- the current learning board layout has reduced outer padding and tighter swimlane gaps to preserve more horizontal space at the `sm` breakpoint and above
+- the current swimlanes no longer use their own contrasting border or background fill, and instead rely on tighter spacing with simpler header/body structure
+- the current learning swimlane header and body padding have been reduced by half to create a denser board layout
+- the current learning task preview and modal now share the same editable progress-field styling, using a slim progress slider with a compact percentage readout for look-and-feel work before persistence
+- the shared learning progress field now treats the slider as the only input control, rather than pairing it with a boxed number field
+- the swimlane board preview now shows progress in a non-editable display mode to avoid accidental mobile changes, while the modal remains the editable progress surface
+- clicking anywhere on a learning task card now opens the modal again, including the progress display area on the board
+- the learning task card trigger now uses a full-card accessible surface without the prior hover-position shift from the board interaction wrapper
+- unit test coverage now includes the shared learning progress field, the learning task card interaction behavior, and the learning task modal rendering/actions, including board progress being disabled while modal progress remains editable
+- the learning task modal now exposes explicit dialog semantics with an accessible heading title
+- current component unit tests now include accessibility assertions alongside rendering and interaction coverage
+- the current mock learning board data now includes multiple realistic sample tasks distributed across all five swimlanes so the page better represents an in-progress personal learning workflow
+- the client app now defines a custom MUI `smd` breakpoint at `750px`, positioned between the default `sm` and `md` breakpoints
+- the learning page now uses the custom `smd` breakpoint instead of `sm` for its responsive layout and spacing adjustments
+- the client app uses Next.js 16 with Turbopack for local development
+- when the client app is opened from a LAN IP instead of `localhost`, Next.js development mode requires `allowedDevOrigins` to include that origin so HMR and other dev assets are not blocked
 
 ## Project Management
 
@@ -128,6 +149,8 @@ Agent operating constraint for this project:
 - whenever editing markup or rendered HTML structure, accessibility semantics should be reviewed and updated as part of the change
 - aria labels, roles, headings, and related accessibility attributes should be kept meaningful and in sync with the UI
 - accessibility decisions should aim toward Section 508 compliance wherever practical
+- whenever writing or updating unit tests for UI components, include accessibility assertions for labels, roles, required states, and keyboard behavior where practical
+- whenever a form includes required fields, unit tests should cover the blocked-submission path as well as the valid submission path where practical
 - exported components and functions should use concise, sensible TSDoc comments at their declaration headers
 
 ## Known Unknowns
@@ -164,6 +187,29 @@ These details are not defined yet:
 - Recorded that the current learning task modal marks the title field as required.
 - Recorded that the current learning task modal includes `Cancel` and `Save` action buttons and currently uses them to close the modal.
 - Recorded that the current learning task modal now wraps its inputs and actions in a form so the required title field can trigger native validation on save.
+- Recorded that the current learning board page, swimlanes, and task cards now use MUI-first layout primitives.
+- Recorded that learning task cards now render task descriptions directly on the board.
+- Recorded that the current learning page and swimlane presentation no longer use their prior local CSS module files because those visuals are now handled directly through MUI.
+- Recorded that the current swimlane headers no longer show task-count badges and now use slightly smaller heading text for better tablet behavior.
+- Recorded that the current learning task modal styling has been aligned more closely with the task card preview styling.
+- Recorded that the current learning board layout now uses reduced outer padding and narrower swimlane gaps to preserve more space after the board began switching to rows at the `sm` breakpoint.
+- Recorded that the current swimlanes no longer use their own contrasting border or background fill and instead use a more minimal structure.
+- Recorded that the current learning swimlane header and body padding were reduced by half to make the board layout denser.
+- Recorded that the learning task preview and modal now share an editable progress field made of a slim styled slider and compact percentage readout, with local-only UI editing for now.
+- Recorded that the shared learning progress field now treats the slider as the only input control instead of using a boxed number field beside it.
+- Recorded that board-level progress is now display-only to reduce accidental mobile changes, while the modal keeps progress editing enabled.
+- Recorded that the entire learning task card is once again the modal trigger, including the board progress display region.
+- Recorded that the learning task card now uses a stable full-card interactive wrapper to avoid the small hover-position shift seen with the prior trigger wrapper.
+- Recorded that test coverage now includes the shared progress field, task-card interaction behavior, and modal rendering/actions, including checks that board progress is disabled and modal progress stays editable.
+- Recorded the standing rule that component unit tests should include accessibility assertions where practical.
+- Recorded the standing rule that forms with required fields should have unit-test coverage for blocked submission when required inputs are empty.
+- Recorded that the learning task modal now exposes explicit dialog semantics with an accessible heading title.
+- Recorded that current component unit tests now include accessibility assertions alongside rendering and interaction coverage.
+- Recorded that the current mock learning board data now includes multiple realistic sample tasks across all five swimlanes to better represent a real board state.
+- Recorded that the client app now has a custom MUI `smd` breakpoint at `750px` between `sm` and `md`.
+- Recorded that the learning page now uses `smd` instead of `sm` for its responsive spacing and row-layout breakpoint.
+- Recorded that the client app is currently running on Next.js 16 with Turbopack in local development.
+- Recorded that opening the client app from a LAN IP requires `allowedDevOrigins` to include that origin or Next.js will block dev-only resources like HMR.
 - Recorded that shared breakpoint values are now being handled through the shared Sass variables file `client/src/styles/_variables.scss`.
 - Recorded that swim lane headers should maintain a consistent minimum height to reduce mismatched title-row heights when titles wrap differently.
 - Recorded the current semantic structure: learning page content uses `main`, each swim lane is a `section`, and each lane title is rendered as heading content inside a `header`.
