@@ -13,6 +13,7 @@ const allowedDevOrigins = Array.from(
 
 const nextConfig: NextConfig = {
   allowedDevOrigins,
+  reactStrictMode: false,
 };
 
 export default nextConfig;

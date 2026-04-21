@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import LearningTask from './LearningTask';
 
 jest.mock('@dnd-kit/react', () => ({
@@ -20,6 +20,7 @@ describe('LearningTask', () => {
       <LearningTask
         learningTaskItem={learningTaskItem}
         setSelectedTaskId={jest.fn()}
+        deleteLearningTask={jest.fn()}
       />
     );
 
@@ -28,7 +29,8 @@ describe('LearningTask', () => {
     expect(screen.getByText(`Resource: ${learningTaskItem.learningResource}`)).toBeInTheDocument();
     expect(screen.getByText(`${learningTaskItem.progress}%`)).toBeInTheDocument();
     expect(screen.getByRole('slider', { name: 'Progress' })).toBeDisabled();
-    expect(screen.getByRole('button', { name: /build a practice app/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /open build a practice app/i })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /task actions for build a practice app/i })).toBeInTheDocument();
   });
 
   it('opens the task modal callback when the full card is clicked', () => {
@@ -38,10 +40,11 @@ describe('LearningTask', () => {
       <LearningTask
         learningTaskItem={learningTaskItem}
         setSelectedTaskId={setSelectedTaskId}
+        deleteLearningTask={jest.fn()}
       />
     );
 
-    fireEvent.click(screen.getByRole('button'));
+    fireEvent.click(screen.getByRole('button', { name: /open build a practice app/i }));
 
     expect(setSelectedTaskId).toHaveBeenCalledWith(learningTaskItem.id);
   });
@@ -53,13 +56,14 @@ describe('LearningTask', () => {
       <LearningTask
         learningTaskItem={learningTaskItem}
         setSelectedTaskId={setSelectedTaskId}
+        deleteLearningTask={jest.fn()}
       />
     );
 
-    const cardButton = screen.getByRole('button');
+    const cardButton = screen.getByRole('button', { name: /open build a practice app/i });
 
     fireEvent.keyDown(cardButton, { key: 'Enter' });
-    fireEvent.keyDown(cardButton, { key: ' ' });
+    fireEvent.keyUp(cardButton, { key: ' ' });
 
     expect(setSelectedTaskId).toHaveBeenCalledTimes(2);
     expect(setSelectedTaskId).toHaveBeenNthCalledWith(1, learningTaskItem.id);
@@ -71,12 +75,91 @@ describe('LearningTask', () => {
       <LearningTask
         learningTaskItem={learningTaskItem}
         setSelectedTaskId={jest.fn()}
+        deleteLearningTask={jest.fn()}
       />
     );
 
-    expect(screen.getByRole('button', { name: /build a practice app/i })).toHaveAttribute(
+    expect(screen.getByRole('button', { name: /open build a practice app/i })).toHaveAttribute(
       'tabindex',
       '0'
     );
+  });
+
+  it('opens a confirmation dialog before deleting the task', async () => {
+    const setSelectedTaskId = jest.fn();
+    const deleteLearningTask = jest.fn();
+
+    render(
+      <LearningTask
+        learningTaskItem={learningTaskItem}
+        setSelectedTaskId={setSelectedTaskId}
+        deleteLearningTask={deleteLearningTask}
+      />
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /task actions for build a practice app/i }));
+    fireEvent.click(await screen.findByRole('menuitem', { name: /delete task/i }));
+
+    expect(await screen.findByRole('dialog', { name: /delete learning task\?/i })).toBeInTheDocument();
+    expect(deleteLearningTask).not.toHaveBeenCalled();
+    expect(setSelectedTaskId).not.toHaveBeenCalled();
+  });
+
+  it('closes the delete confirmation dialog without deleting when canceled', async () => {
+    const deleteLearningTask = jest.fn();
+
+    render(
+      <LearningTask
+        learningTaskItem={learningTaskItem}
+        setSelectedTaskId={jest.fn()}
+        deleteLearningTask={deleteLearningTask}
+      />
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /task actions for build a practice app/i }));
+    fireEvent.click(await screen.findByRole('menuitem', { name: /delete task/i }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Cancel' }));
+
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog', { name: /delete learning task\?/i })).not.toBeInTheDocument();
+    });
+    expect(deleteLearningTask).not.toHaveBeenCalled();
+  });
+
+  it('deletes the task from the confirmation dialog without opening the task modal', async () => {
+    const setSelectedTaskId = jest.fn();
+    const deleteLearningTask = jest.fn();
+
+    render(
+      <LearningTask
+        learningTaskItem={learningTaskItem}
+        setSelectedTaskId={setSelectedTaskId}
+        deleteLearningTask={deleteLearningTask}
+      />
+    );
+
+    fireEvent.click(screen.getByRole('button', { name: /task actions for build a practice app/i }));
+    fireEvent.click(await screen.findByRole('menuitem', { name: /delete task/i }));
+    fireEvent.click(await screen.findByRole('button', { name: 'Delete' }));
+
+    expect(deleteLearningTask).toHaveBeenCalledWith(learningTaskItem.id);
+    expect(setSelectedTaskId).not.toHaveBeenCalled();
+    await waitFor(() => {
+      expect(screen.queryByRole('dialog', { name: /delete learning task\?/i })).not.toBeInTheDocument();
+    });
+  });
+
+  it('shows a hover tooltip for the delete icon button', async () => {
+    render(
+      <LearningTask
+        learningTaskItem={learningTaskItem}
+        setSelectedTaskId={jest.fn()}
+        deleteLearningTask={jest.fn()}
+      />
+    );
+
+    fireEvent.mouseOver(screen.getByRole('button', { name: /task actions for build a practice app/i }));
+
+    expect(await screen.findByRole('tooltip')).toHaveTextContent('Task actions');
   });
 });
