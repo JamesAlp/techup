@@ -133,6 +133,10 @@ Current frontend decision:
 - the learning page now uses the custom `smd` breakpoint instead of `sm` for its responsive layout and spacing adjustments
 - the client app uses Next.js 16 with Turbopack for local development
 - when the client app is opened from a LAN IP instead of `localhost`, Next.js development mode requires `allowedDevOrigins` to include that origin so HMR and other dev assets are not blocked
+- Next.js components should default to server components; `'use client'` should only be added when a component actually needs client-only behavior
+- the client app now includes a shared top-level navigation bar that renders on every page from the root layout
+- the shared top-level navigation bar currently includes a home link labeled `TechUp` plus a `/learning` link labeled `My Learning`
+- the shared top-level navigation bar lives inside the app theme provider and above the learning task context provider in `client/src/app/layout.tsx`
 - the learning page now uses its `onDragEnd` handler to move a dragged learning task into a new swim lane by dispatching `update_learning_tasks` with the task's updated `swimlane`
 - current learning page unit tests now cover drag-end task movement plus guard cases for canceled drags and invalid swim lane targets
 
@@ -213,6 +217,9 @@ These details are not defined yet:
 - Strengthened the agent documentation rule so TSDoc is expected on local and exported functions/components, and brief comments are expected around complex or non-obvious code.
 - Added matching documentation guidance to `client/AGENTS.md` for frontend work.
 - Recorded that learning task cards should reserve action-menu spacing in the title row only, while the rest of the card body keeps the default content padding.
+- Recorded that the client app now renders a shared top-level navigation bar from the root layout on every page.
+- Recorded that the current top-level navigation bar includes `TechUp` home navigation and a `My Learning` link to `/learning`.
+- Recorded the Next.js preference to keep components as server components by default and only add `'use client'` when client-only behavior is required.
 - Recorded that the learning page `onDragEnd` handler now dispatches swimlane changes for valid drag targets.
 - Recorded that learning page unit tests now cover drag-end updates and drag guard cases.
 - Recorded the responsive add-task entry pattern: desktop/tablet top-right button plus mobile floating action button.
