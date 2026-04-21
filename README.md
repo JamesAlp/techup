@@ -23,6 +23,7 @@ The repository currently contains a `client` application that implements the lea
 
 Current learning-board capabilities include:
 
+- rendering a persistent top-level app navigation bar across routes
 - rendering five learning swim lanes
 - rendering learning task cards inside those lanes
 - opening the shared learning task modal from task cards and add-task controls

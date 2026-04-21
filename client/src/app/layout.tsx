@@ -1,11 +1,15 @@
 'use client';
 
-import type { Metadata } from "next";
-import AppThemeProvider from "./AppThemeProvider";
-import "./globals.css";
-import { LearningTasksContext, learningTasksReducer, LearningTasksState } from "@/context/learningTasks/learningTasks.store";
-import { useReducer } from "react";
-import exampleLearningTasks from "@/temp/learningTasks";
+import AppThemeProvider from './AppThemeProvider';
+import './globals.css';
+import AppNavbar from '@/components/navigation/AppNavbar/AppNavbar';
+import {
+  LearningTasksContext,
+  learningTasksReducer,
+  LearningTasksState,
+} from '@/context/learningTasks/learningTasks.store';
+import { useReducer } from 'react';
+import exampleLearningTasks from '@/temp/learningTasks';
 
 // export const metadata: Metadata = {
 //   title: "Create Next App",
@@ -30,6 +34,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <AppThemeProvider>
+          <AppNavbar />
           <LearningTasksContext.Provider value={{ state, dispatch }}>
             {children}
           </LearningTasksContext.Provider>
