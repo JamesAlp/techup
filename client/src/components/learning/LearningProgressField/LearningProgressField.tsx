@@ -65,6 +65,7 @@ export default function LearningProgressField({
         </Typography>
       </Box>
       <Slider
+        name="progress"
         aria-labelledby={labelId}
         disabled={!editable}
         min={0}
@@ -75,6 +76,7 @@ export default function LearningProgressField({
         sx={{
           px: 0,
           py: 0.5,
+          pointerEvents: editable ? 'auto' : 'none',
           '& .MuiSlider-rail': {
             height: 8,
             opacity: 1,
@@ -98,10 +100,14 @@ export default function LearningProgressField({
             height: 14,
             bgcolor: '#ffffff',
             border: '2px solid #2563eb',
-            boxShadow: '0 0 0 4px rgba(37, 99, 235, 0.16)',
-            '&:hover, &.Mui-focusVisible': {
-              boxShadow: '0 0 0 6px rgba(37, 99, 235, 0.2)',
-            },
+            boxShadow: editable ? '0 0 0 4px rgba(37, 99, 235, 0.16)' : 'none',
+            ...(editable
+              ? {
+                '&:hover, &.Mui-focusVisible': {
+                  boxShadow: '0 0 0 6px rgba(37, 99, 235, 0.2)',
+                },
+              }
+              : {}),
             '&::before': {
               boxShadow: 'none',
             },
@@ -109,6 +115,7 @@ export default function LearningProgressField({
           '& .MuiSlider-thumb.Mui-disabled': {
             bgcolor: '#ffffff',
             borderColor: '#2563eb',
+            boxShadow: 'none',
           },
           '&.Mui-disabled': {
             opacity: 1,

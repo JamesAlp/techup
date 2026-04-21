@@ -66,7 +66,7 @@ Current frontend decision:
 - this is specifically to support both server-rendered and client-rendered components
 - the `client` portion of the project now has its own scoped `AGENTS.md` file
 - that file should be treated as local guidance for agent work within the `client` app
-- its contents have not been reviewed yet and should only be inspected if the user explicitly asks
+- the current `client/AGENTS.md` warns that the app's Next.js version may differ materially from older assumptions and instructs agents to consult the bundled docs under `node_modules/next/dist/docs/` before writing code
 - the `client` app uses `pnpm` as its package manager
 - `@mui/material` is installed in the `client` app and is being used for modal UI primitives
 - the current `LearningTaskModal` implementation is intentionally bare minimum and uses a single component file with no barrel export
@@ -101,11 +101,14 @@ Current frontend decision:
 - the current learning board layout has reduced outer padding and tighter swimlane gaps to preserve more horizontal space at the `sm` breakpoint and above
 - the current swimlanes no longer use their own contrasting border or background fill, and instead rely on tighter spacing with simpler header/body structure
 - the current learning swimlane header and body padding have been reduced by half to create a denser board layout
+- the learning page now seeds its local `learningTasks` state from imported example task data in `client/src/temp/learningTasks.ts`
 - the current learning task preview and modal now share the same editable progress-field styling, using a slim progress slider with a compact percentage readout for look-and-feel work before persistence
 - the shared learning progress field now treats the slider as the only input control, rather than pairing it with a boxed number field
 - the swimlane board preview now shows progress in a non-editable display mode to avoid accidental mobile changes, while the modal remains the editable progress surface
 - clicking anywhere on a learning task card now opens the modal again, including the progress display area on the board
 - the learning task card trigger now uses a full-card accessible surface without the prior hover-position shift from the board interaction wrapper
+- the learning task card now again uses a MUI button-base wrapper so click and focus ripple feedback are available on the full-card trigger without the earlier hover-position shift
+- the learning task card full-card trigger now uses MUI `CardActionArea` so the card keeps its ripple feedback with more stable card-specific hover behavior
 - unit test coverage now includes the shared learning progress field, the learning task card interaction behavior, and the learning task modal rendering/actions, including board progress being disabled while modal progress remains editable
 - the learning task modal now exposes explicit dialog semantics with an accessible heading title
 - current component unit tests now include accessibility assertions alongside rendering and interaction coverage
@@ -182,6 +185,7 @@ These details are not defined yet:
 - Recorded the frontend decision to use `Next.js` for both server-rendered and client-rendered components.
 - Recorded the collaboration rule that no code or commands should be written or run unless explicitly requested by the user.
 - Recorded that the `client` app has its own scoped `AGENTS.md`, likely for app-specific agent guidance.
+- Recorded that the current `client/AGENTS.md` warns agents not to assume older Next.js behavior and directs them to the bundled docs under `node_modules/next/dist/docs/` before coding.
 - Recorded the TechUp YouTrack project link for project management: `https://techup.youtrack.cloud/projects/TEC`.
 - Recorded that swim lanes should render as equal-width columns with a title/header area and a separate swim lane body section, using the lane `id` as the visible title.
 - Recorded that the current learning board has five swim lanes with the titles `Selected for Learning`, `Learning in Progress`, `Learning Completed`, `Learning in Verification`, and `Learning Verified`.
@@ -206,11 +210,14 @@ These details are not defined yet:
 - Recorded that the current learning board layout now uses reduced outer padding and narrower swimlane gaps to preserve more space after the board began switching to rows at the `sm` breakpoint.
 - Recorded that the current swimlanes no longer use their own contrasting border or background fill and instead use a more minimal structure.
 - Recorded that the current learning swimlane header and body padding were reduced by half to make the board layout denser.
+- Recorded that the learning page now seeds local `learningTasks` state from `client/src/temp/learningTasks.ts`.
 - Recorded that the learning task preview and modal now share an editable progress field made of a slim styled slider and compact percentage readout, with local-only UI editing for now.
 - Recorded that the shared learning progress field now treats the slider as the only input control instead of using a boxed number field beside it.
 - Recorded that board-level progress is now display-only to reduce accidental mobile changes, while the modal keeps progress editing enabled.
 - Recorded that the entire learning task card is once again the modal trigger, including the board progress display region.
 - Recorded that the learning task card now uses a stable full-card interactive wrapper to avoid the small hover-position shift seen with the prior trigger wrapper.
+- Recorded that the learning task card now again uses a MUI button-base wrapper so click and focus ripple feedback are available without the earlier hover-position shift.
+- Recorded that the learning task card full-card trigger now uses MUI `CardActionArea` so the card keeps ripple feedback with more stable card-specific hover behavior.
 - Recorded that test coverage now includes the shared progress field, task-card interaction behavior, and modal rendering/actions, including checks that board progress is disabled and modal progress stays editable.
 - Recorded the standing rule that component unit tests should include accessibility assertions where practical.
 - Recorded the standing rule that forms with required fields should have unit-test coverage for blocked submission when required inputs are empty.

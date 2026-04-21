@@ -1,10 +1,9 @@
-import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
+import CardActionArea from '@mui/material/CardActionArea';
 import CardContent from '@mui/material/CardContent';
 import Stack from '@mui/material/Stack';
 import Typography from '@mui/material/Typography';
 import { useDraggable } from '@dnd-kit/react';
-import { KeyboardEvent } from 'react';
 import LearningProgressField from '../LearningProgressField/LearningProgressField';
 
 export type LearningTaskItem = {
@@ -36,40 +35,33 @@ export default function LearningTask({ learningTaskItem, setSelectedTaskId }: Le
     setSelectedTaskId(id);
   };
 
-  const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
-    if (event.key !== 'Enter' && event.key !== ' ') {
-      return;
-    }
-
-    event.preventDefault();
-    handleOpen();
-  };
-
   return (
     <Card
+      ref={ref}
       variant="outlined"
       sx={{
+        overflow: 'hidden',
         borderRadius: 2.5,
         borderColor: 'rgba(148, 163, 184, 0.35)',
         boxShadow: '0 10px 24px rgba(15, 23, 42, 0.08)',
       }}
     >
-      <Box
+      <CardActionArea
         component="div"
-        ref={ref}
-        role="button"
-        tabIndex={0}
         onClick={handleOpen}
-        onKeyDown={handleKeyDown}
         sx={{
-          display: 'block',
           width: '100%',
-          borderRadius: 2.5,
           textAlign: 'left',
-          cursor: 'pointer',
-          outline: 'none',
-          '&:focus-visible': {
+          alignItems: 'stretch',
+          borderRadius: 2.5,
+          '&.MuiCardActionArea-root': {
+            borderRadius: 2.5,
+          },
+          '&.Mui-focusVisible': {
             boxShadow: '0 0 0 3px rgba(37, 99, 235, 0.2)',
+          },
+          '& .MuiCardActionArea-focusHighlight': {
+            opacity: 0,
           },
         }}
       >
@@ -89,7 +81,7 @@ export default function LearningTask({ learningTaskItem, setSelectedTaskId }: Le
             <LearningProgressField label="Progress" defaultValue={progress} editable={false} />
           </Stack>
         </CardContent>
-      </Box>
+      </CardActionArea>
     </Card>
   );
 }

@@ -6,11 +6,12 @@ import { DragDropProvider } from '@dnd-kit/react';
 import LearningSwimlane, {
   LearningSwimlaneProps,
 } from '@/components/learning/LearningSwimlane/LearningSwimlane';
-import LearningTask, { LearningTaskItem } from '@/components/learning/LearningTask/LearningTask';
+import LearningTask from '@/components/learning/LearningTask/LearningTask';
 import LearningTaskModal, {
   LearningTaskModalState,
 } from '@/components/learning/LearningTaskModal/LearningTaskModal';
-import { useMemo, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
+import { LearningTasksContext } from '@/context/learningTasks/learningTasks.store';
 
 const learningSwimlanes: LearningSwimlaneProps[] = [
   {
@@ -35,73 +36,6 @@ const learningSwimlanes: LearningSwimlaneProps[] = [
   },
 ];
 
-const learningTaskItems: LearningTaskItem[] = [
-  {
-    id: 'A',
-    title: 'Finish React fundamentals module',
-    description: 'Work through components, props, JSX, and state basics before moving into project work.',
-    learningResource: 'Udemy React course',
-    progress: 15,
-    swimlane: 'A',
-  },
-  {
-    id: 'B',
-    title: 'Review component composition patterns',
-    description: 'Take notes on composition, prop drilling, and how to break large UI trees into smaller pieces.',
-    learningResource: 'React docs',
-    progress: 5,
-    swimlane: 'A',
-  },
-  {
-    id: 'C',
-    title: 'Build a hooks practice app',
-    description: 'Create a small practice app that uses state, effects, and reusable components.',
-    learningResource: 'Course project section',
-    progress: 55,
-    swimlane: 'B',
-  },
-  {
-    id: 'D',
-    title: 'Complete routing mini project',
-    description: 'Finish the guided router exercise and verify the page flow works across nested routes.',
-    learningResource: 'React Router tutorial',
-    progress: 80,
-    swimlane: 'B',
-  },
-  {
-    id: 'E',
-    title: 'Wrap up module quiz',
-    description: 'Submit the end-of-module assessment and record any missed concepts for follow-up.',
-    learningResource: 'Course quiz',
-    progress: 100,
-    swimlane: 'C',
-  },
-  {
-    id: 'F',
-    title: 'Verify state management notes',
-    description: 'Re-read notes on derived state and effects to make sure the explanations still feel solid.',
-    learningResource: 'Personal notes',
-    progress: 100,
-    swimlane: 'D',
-  },
-  {
-    id: 'G',
-    title: 'Rebuild todo app from memory',
-    description: 'Recreate the practice app without the walkthrough to confirm the core concepts have stuck.',
-    learningResource: 'Previous project brief',
-    progress: 100,
-    swimlane: 'E',
-  },
-  {
-    id: 'H',
-    title: 'Explain hooks lifecycle aloud',
-    description: 'Talk through render timing, effect cleanup, and dependency behavior without referring to notes.',
-    learningResource: 'Self-review session',
-    progress: 100,
-    swimlane: 'A',
-  },
-];
-
 /**
  * Renders the learning board route with the current swim lane collection.
  *
@@ -112,16 +46,23 @@ export default function Learning() {
     open: false,
     learningTaskId: undefined,
   });
-
   const setSelectedTaskId = (id: string) => {
     setModalState({
       open: true,
       learningTaskId: id,
     });
   };
+  const learningTasksContext = useContext(LearningTasksContext);
+  const learningTasks = learningTasksContext?.state.learningTasks;
+
+  console.log('learningTasks: ', learningTasks);
+
   const selectedLearningTask = useMemo(
-    () => learningTaskItems.find((learningTask) => learningTask.id === modalState.learningTaskId),
-    [modalState.learningTaskId],
+    () => {
+      if (!learningTasks) return;
+      return learningTasks.find((learningTask) => learningTask.id === modalState.learningTaskId);
+    },
+    [learningTasksContext, modalState.learningTaskId],
   );
 
   return (
@@ -150,8 +91,8 @@ export default function Learning() {
               alignItems: 'stretch',
             }}
           >
-            {learningSwimlanes.map((learningSwimlane) => {
-              const tasksInSwimlane = learningTaskItems.filter(
+            {learningTasks && learningSwimlanes.map((learningSwimlane) => {
+              const tasksInSwimlane = learningTasks.filter(
                 (learningTaskItem) => learningTaskItem.swimlane === learningSwimlane.id,
               );
 
@@ -161,7 +102,7 @@ export default function Learning() {
                   id={learningSwimlane.id}
                   title={learningSwimlane.title}
                 >
-                  {tasksInSwimlane.map((learningTaskItem) => (
+                  {tasksInSwimlane && tasksInSwimlane.map((learningTaskItem) => (
                     <LearningTask
                       key={learningTaskItem.id}
                       learningTaskItem={learningTaskItem}

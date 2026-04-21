@@ -5,9 +5,10 @@ import Button from '@mui/material/Button';
 import Modal from '@mui/material/Modal';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { useId } from 'react';
+import { useContext, useId } from 'react';
 import { LearningTaskItem } from '../LearningTask/LearningTask';
 import LearningProgressField from '../LearningProgressField/LearningProgressField';
+import { LearningTasksContext } from '@/context/learningTasks/learningTasks.store';
 
 export type LearningTaskModalState = {
   open: boolean;
@@ -16,7 +17,7 @@ export type LearningTaskModalState = {
 
 export type LearningTaskModalProps = {
   open: boolean;
-  onClose?: () => void;
+  onClose: () => void;
   learningTask?: LearningTaskItem;
 };
 
@@ -32,14 +33,27 @@ export default function LearningTaskModal({
   learningTask,
 }: LearningTaskModalProps) {
   const titleId = useId();
-
   const handleCancel = () => {
-    onClose?.();
+    onClose();
   };
-
-  const handleSave = (event: React.FormEvent<HTMLFormElement>) => {
+  const learningTasksContext = useContext(LearningTasksContext);
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    onClose?.();
+    if (learningTask) {
+      const formData = new FormData(event.currentTarget);
+      const newLearningTaskItem: LearningTaskItem = {
+        id: learningTask.id,
+        title: String(formData.get('title')),
+        description: String(formData.get('description')),
+        learningResource: String(formData.get('learning-resource')),
+        progress: Number(formData.get('progress'))
+      };
+      learningTasksContext?.dispatch({
+        type: 'update_learning_tasks',
+        payload: newLearningTaskItem
+      });
+    }
+    onClose();
   };
 
   return (
@@ -61,12 +75,13 @@ export default function LearningTaskModal({
           p: 3,
         }}
       >
-        <Box component="form" onSubmit={handleSave}>
+        <Box component="form" onSubmit={handleSubmit}>
           <Typography id={titleId} component="h2" variant="h6" sx={{ mb: 2, fontWeight: 700 }}>
             Edit learning task
           </Typography>
           <Box sx={{ mb: 2 }}>
             <TextField
+              name="title"
               fullWidth
               label="Title"
               required
@@ -75,6 +90,7 @@ export default function LearningTaskModal({
           </Box>
           <Box sx={{ display: 'grid', gap: 2 }}>
             <TextField
+              name="description"
               fullWidth
               multiline
               minRows={3}
@@ -82,6 +98,7 @@ export default function LearningTaskModal({
               defaultValue={learningTask?.description ?? ''}
             />
             <TextField
+              name="learning-resource"
               fullWidth
               label="Learning Resource"
               defaultValue={learningTask?.learningResource ?? ''}

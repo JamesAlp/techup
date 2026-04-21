@@ -1,5 +1,7 @@
 import React, { ReactNode } from 'react';
 import { render, screen } from '@testing-library/react';
+import { LearningTasksContext } from '@/context/learningTasks/learningTasks.store';
+import exampleLearningTasks from '@/temp/learningTasks';
 import Learning from './page';
 
 jest.mock('@dnd-kit/react', () => ({
@@ -16,9 +18,24 @@ describe('Learning page', () => {
     { id: 'D', title: 'Learning in Verification' },
     { id: 'E', title: 'Learning Verified' },
   ];
+  const renderLearningPage = () =>
+    render(
+      React.createElement(
+        LearningTasksContext.Provider,
+        {
+          value: {
+            state: {
+              learningTasks: exampleLearningTasks,
+            },
+            dispatch: jest.fn(),
+          },
+        },
+        React.createElement(Learning)
+      )
+    );
 
   it('mounts the five current learning swim lanes with their titles', () => {
-    const { container } = render(React.createElement(Learning));
+    const { container } = renderLearningPage();
 
     expect(expectedLearningSwimlanes).toHaveLength(5);
 
@@ -29,7 +46,7 @@ describe('Learning page', () => {
   });
 
   it('renders the swim lane headings in the expected order', () => {
-    render(React.createElement(Learning));
+    renderLearningPage();
 
     const headings = screen.getAllByRole('heading', { level: 2 });
 
@@ -40,7 +57,7 @@ describe('Learning page', () => {
   });
 
   it('renders one labeled swim lane drop area for each target', () => {
-    render(React.createElement(Learning));
+    renderLearningPage();
 
     const dropAreas = screen.getAllByRole('group');
 

@@ -59,7 +59,7 @@ describe('LearningTask', () => {
     const cardButton = screen.getByRole('button');
 
     fireEvent.keyDown(cardButton, { key: 'Enter' });
-    fireEvent.keyDown(cardButton, { key: ' ' });
+    fireEvent.keyUp(cardButton, { key: ' ' });
 
     expect(setSelectedTaskId).toHaveBeenCalledTimes(2);
     expect(setSelectedTaskId).toHaveBeenNthCalledWith(1, learningTaskItem.id);
