@@ -25,12 +25,13 @@ Current learning-board capabilities include:
 
 - rendering five learning swim lanes
 - rendering learning task cards inside those lanes
-- opening a learning task modal from a task card
-- editing task fields in the modal UI
+- opening the shared learning task modal from task cards and add-task controls
+- creating new tasks in the modal UI
+- editing existing task fields in the same modal UI
 - showing progress on the board as display-only
 - editing progress in the modal
 
-The current modal experience is UI-first and does not yet persist task changes.
+The current modal experience updates in-memory board state through the reducer, but it is not yet backed by longer-term persistence or storage.
 
 ## Tech Stack
 

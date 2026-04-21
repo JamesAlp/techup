@@ -69,12 +69,17 @@ Current frontend decision:
 - the current `client/AGENTS.md` warns that the app's Next.js version may differ materially from older assumptions and instructs agents to consult the bundled docs under `node_modules/next/dist/docs/` before writing code
 - the `client` app uses `pnpm` as its package manager
 - `@mui/material` is installed in the `client` app and is being used for modal UI primitives
+- `@mui/icons-material` is now installed in the `client` app for Material icon components
+- the `client` app's MUI and Emotion packages remain in runtime `dependencies` because application code imports them directly
 - the current `LearningTaskModal` implementation is intentionally bare minimum and uses a single component file with no barrel export
 - `LearningTaskItem` now includes `title`, `description`, `learningResource`, and `progress` values that seed the current modal inputs as defaults
 - the current learning task modal uses MUI form controls: `TextField` for task text values and `Slider` for progress
 - the learning task modal currently treats the task title field as required
-- the learning task modal currently includes MUI `Cancel` and `Save` action buttons, with both actions closing the modal until task persistence is implemented
+- the learning task modal now serves as both the create-task and edit-task surface for learning tasks
+- the learning page add-task entry points now open the shared learning task modal in create mode
+- the learning task modal currently includes MUI `Cancel` plus a context-sensitive submit action, with submit dispatching either `add_learning_tasks` or `update_learning_tasks` before the modal closes
 - the learning task modal inputs and actions are wrapped in a form so browser validation can block save when required fields are empty
+- newly created learning tasks currently receive a client-generated id and default into the first learning swim lane, `Selected for Learning`
 - unit tests are set up with `Jest` using `next/jest` and React Testing Library
 - shared Sass design variables are currently defined in `client/src/styles/_variables.scss`
 - style modules that need shared breakpoint tokens should import the shared Sass variables file directly
@@ -109,6 +114,17 @@ Current frontend decision:
 - the learning task card trigger now uses a full-card accessible surface without the prior hover-position shift from the board interaction wrapper
 - the learning task card now again uses a MUI button-base wrapper so click and focus ripple feedback are available on the full-card trigger without the earlier hover-position shift
 - the learning task card full-card trigger now uses MUI `CardActionArea` so the card keeps its ripple feedback with more stable card-specific hover behavior
+- learning task cards now include a dedicated close-icon button for deleting a task without using the full-card open action
+- the learning task card open action and delete action now use distinct accessible button names so they are easier to target for assistive tech and tests
+- the learning task delete icon button now uses a borderless minimal treatment with a light grey icon so it reads as a secondary card action
+- the learning task card action-menu spacing should only reserve space in the title row; description, resource text, and progress content should keep the card's default content width
+- icon buttons should include concise hover tooltips describing their action, and the current learning task delete button now uses a hover-only tooltip
+- deleting a learning task from the card now requires confirming through a dialog before the reducer action is dispatched
+- learning task cards and the learning task modal now share a gear-icon actions menu component, with delete currently exposed through the menu
+- learning task deletion confirmation now lives in its own shared dialog component used by both the card and the modal
+- the learning task modal now includes a dedicated close `X` icon button, and that icon is reserved for closing the modal rather than destructive actions
+- the learning page now exposes add-task entry points in two responsive forms: a standard top-right button at `smd` and above, and a floating circular plus button on smaller screens
+- learning page add-task flows now use the existing learning task modal instead of a separate creation UI
 - unit test coverage now includes the shared learning progress field, the learning task card interaction behavior, and the learning task modal rendering/actions, including board progress being disabled while modal progress remains editable
 - the learning task modal now exposes explicit dialog semantics with an accessible heading title
 - current component unit tests now include accessibility assertions alongside rendering and interaction coverage
@@ -117,6 +133,8 @@ Current frontend decision:
 - the learning page now uses the custom `smd` breakpoint instead of `sm` for its responsive layout and spacing adjustments
 - the client app uses Next.js 16 with Turbopack for local development
 - when the client app is opened from a LAN IP instead of `localhost`, Next.js development mode requires `allowedDevOrigins` to include that origin so HMR and other dev assets are not blocked
+- the learning page now uses its `onDragEnd` handler to move a dragged learning task into a new swim lane by dispatching `update_learning_tasks` with the task's updated `swimlane`
+- current learning page unit tests now cover drag-end task movement plus guard cases for canceled drags and invalid swim lane targets
 
 ## Project Management
 
@@ -160,7 +178,8 @@ Agent operating constraint for this project:
 - accessibility decisions should aim toward Section 508 compliance wherever practical
 - whenever writing or updating unit tests for UI components, include accessibility assertions for labels, roles, required states, and keyboard behavior where practical
 - whenever a form includes required fields, unit tests should cover the blocked-submission path as well as the valid submission path where practical
-- exported components and functions should use concise, sensible TSDoc comments at their declaration headers
+- functions and components should include concise, sensible TSDoc comments at their declaration headers, whether they are exported or local helpers
+- any non-obvious or complex code should include brief explanatory comments close to the relevant logic
 
 ## Known Unknowns
 
@@ -175,6 +194,28 @@ These details are not defined yet:
 - reporting or analytics requirements
 
 ## Change Log
+
+### 2026-04-21
+
+- Installed `@mui/icons-material` in the `client` app with `pnpm`.
+- Recorded that the `client` app keeps MUI and Emotion packages in runtime `dependencies` rather than `devDependencies` because the rendered application imports them directly.
+- Recorded that learning task cards now render a dedicated delete icon button alongside the full-card open action.
+- Recorded that deleting a learning task from the card now dispatches the `delete_learning_tasks` reducer action.
+- Recorded that the learning task delete icon button now uses a borderless, light-grey presentation.
+- Recorded the UI convention that icon buttons should expose concise hover-only tooltips, with the learning task delete button as the current example.
+- Recorded that deleting a learning task from the card now opens a confirmation dialog before removal is finalized.
+- Recorded that task-level destructive actions now sit behind a shared gear-icon actions menu on both cards and the modal.
+- Recorded that the delete confirmation dialog is now a shared component used by both card and modal delete flows.
+- Recorded that the modal now uses a dedicated close `X` icon button for dismissal, separating close behavior from task actions.
+- Recorded that the learning page add-task entry points now open the existing modal in create mode instead of using a separate creation surface.
+- Recorded that the shared learning task modal now handles both add and edit submissions through the reducer.
+- Recorded that newly created learning tasks currently receive a client-generated id and default into the first swim lane, `Selected for Learning`.
+- Strengthened the agent documentation rule so TSDoc is expected on local and exported functions/components, and brief comments are expected around complex or non-obvious code.
+- Added matching documentation guidance to `client/AGENTS.md` for frontend work.
+- Recorded that learning task cards should reserve action-menu spacing in the title row only, while the rest of the card body keeps the default content padding.
+- Recorded that the learning page `onDragEnd` handler now dispatches swimlane changes for valid drag targets.
+- Recorded that learning page unit tests now cover drag-end updates and drag guard cases.
+- Recorded the responsive add-task entry pattern: desktop/tablet top-right button plus mobile floating action button.
 
 ### 2026-04-18
 
