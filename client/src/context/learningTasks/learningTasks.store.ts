@@ -23,7 +23,6 @@ export function learningTasksReducer(
   if (!action.payload) return state;
   switch (action.type) {
     case 'update_learning_tasks':
-      console.log(action)
       return {
         ...state,
         learningTasks: state.learningTasks.map(learningTask =>

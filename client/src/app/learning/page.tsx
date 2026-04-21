@@ -54,9 +54,6 @@ export default function Learning() {
   };
   const learningTasksContext = useContext(LearningTasksContext);
   const learningTasks = learningTasksContext?.state.learningTasks;
-
-  console.log('learningTasks: ', learningTasks);
-
   const selectedLearningTask = useMemo(
     () => {
       if (!learningTasks) return;
