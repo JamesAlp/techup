@@ -106,6 +106,7 @@ The current workflow:
 - skips draft pull requests so CI only runs once the pull request is ready for review
 - future pull request pipelines in this repository should also skip draft pull requests and wait until `ready_for_review`
 - runs the client unit test suite on non-draft pull requests regardless of target branch
+- runs a standalone `pnpm outdated --format json` job in `client/` only for pull requests targeting `master`, uploading the generated report as a workflow artifact
 - runs a `pnpm audit --audit-level high` job in `client/` only for pull requests targeting `master`
 - blocks the `master` pull request workflow when the client audit finds any vulnerability at `high` severity or above
 - installs dependencies in `client/` with `pnpm install --frozen-lockfile`

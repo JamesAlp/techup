@@ -9,6 +9,43 @@ on:
       - ready_for_review
 
 jobs:
+  client-outdated-report:
+    name: Client Outdated Report
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false && github.event.pull_request.base.ref == 'master'
+
+    defaults:
+      run:
+        working-directory: client
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: client/pnpm-lock.yaml
+
+      - name: Install client dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate outdated dependency report
+        run: pnpm outdated --format json > outdated-report.json
+
+      - name: Upload outdated dependency report
+        uses: actions/upload-artifact@v4
+        with:
+          name: client-outdated-report
+          path: client/outdated-report.json
+
   client-audit:
     name: Client Audit
     runs-on: ubuntu-latest
