@@ -25,6 +25,7 @@ describe('AppNavbar', () => {
 
     expect(screen.getByRole('navigation', { name: 'Main navigation' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'TechUp' })).toHaveAttribute('href', '/');
+    expect(screen.getByRole('link', { name: 'My Projects' })).toHaveAttribute('href', '/');
     expect(screen.getByRole('link', { name: 'My Learning' })).toHaveAttribute('href', '/learning');
   });
 });
