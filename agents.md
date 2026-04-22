@@ -100,6 +100,7 @@ Current frontend decision:
 - the current pull request workflow skips draft pull requests so CI only runs after the pull request is ready for review
 - future pull request pipelines and workflows in this repository should also skip draft pull requests and only start when the pull request is ready for review
 - the current pull request workflow runs `client-unit-tests` for non-draft pull requests regardless of target branch
+- the current pull request workflow runs a `client-outdated-report` job only when a non-draft pull request targets `master`, generating `outdated-report.json` from `pnpm outdated --format json` and uploading it as an artifact
 - the current pull request workflow runs a `client-audit` job in the `client` directory with `pnpm audit --audit-level high` only when a non-draft pull request targets `master`
 - the current pull request workflow requires the `client-audit` job to pass before running `client-unit-tests` when the audit job runs, but still allows tests to run when the audit job is skipped on non-`master` targets
 - the current pull request workflow runs tests from the `client` directory with `pnpm exec jest --runInBand`
@@ -260,6 +261,7 @@ These details are not defined yet:
 - Recorded that `client-unit-tests` now wait for the audit job only when that audit runs, while still running normally when the audit is skipped on non-`master` pull requests.
 - Recorded that pull request CI should skip draft pull requests and instead start when the pull request becomes ready for review.
 - Recorded the standing repository rule that future pull request pipelines should also skip draft pull requests and wait for `ready_for_review`.
+- Recorded that pull request CI now includes a parallel `client-outdated-report` job for non-draft pull requests into `master`, generating and uploading a `pnpm outdated --format json` report artifact.
 
 ### 2026-04-18
 
