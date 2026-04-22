@@ -5,6 +5,22 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import NextLink from 'next/link';
 
+interface link {
+  title: string,
+  href: string;
+};
+
+const links: link[] = [
+  {
+    title: 'My Projects',
+    href: '/'
+  },
+  {
+    title: 'My Learning',
+    href: '/learning'
+  }
+];
+
 /**
  * Renders the shared top-level navigation bar for the TechUp app shell.
  *
@@ -47,18 +63,23 @@ export default function AppNavbar() {
           TechUp
         </Typography>
         <Box sx={{ flexGrow: 1 }} />
-        <Button
-          component={NextLink}
-          href="/learning"
-          color="inherit"
-          sx={{
-            textTransform: 'none',
-            fontWeight: 600,
-            color: 'text.primary',
-          }}
-        >
-          My Learning
-        </Button>
+        {
+          links.map((link, index) => (
+            <Button
+              key={index}
+              component={NextLink}
+              href={link.href}
+              color="inherit"
+              sx={{
+                textTransform: 'none',
+                fontWeight: 600,
+                color: 'text.primary',
+              }}
+            >
+              {link.title}
+            </Button>
+          ))
+        }
       </Toolbar>
     </AppBar>
   );

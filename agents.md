@@ -57,6 +57,7 @@ Based on current project knowledge, the app should support:
 - the swim lane title currently uses the lane `id` as its display text
 - the current learning board implementation uses five swim lanes
 - the current learning swim lane titles are `Selected for Learning`, `Learning in Progress`, `Learning Completed`, `Learning in Verification`, and `Learning Verified`
+- the app now also has an early skill-tree direction centered on turning job or project requirements into suggested high-level learning paths
 
 ## Technical Direction
 
@@ -69,6 +70,8 @@ Current frontend decision:
 - the current `client/AGENTS.md` warns that the app's Next.js version may differ materially from older assumptions and instructs agents to consult the bundled docs under `node_modules/next/dist/docs/` before writing code
 - the `client` app uses `pnpm` as its package manager
 - `@mui/material` is installed in the `client` app and is being used for modal UI primitives
+- the `client` app is currently using MUI 9, and Drawer paper customization should use `slotProps.paper` instead of the legacy `PaperProps` API
+- `@xyflow/react` is now installed in the `client` app for the current skill-tree prototype
 - `@mui/icons-material` is now installed in the `client` app for Material icon components
 - the `client` app's MUI and Emotion packages remain in runtime `dependencies` because application code imports them directly
 - the current `LearningTaskModal` implementation is intentionally bare minimum and uses a single component file with no barrel export
@@ -134,9 +137,21 @@ Current frontend decision:
 - the client app uses Next.js 16 with Turbopack for local development
 - when the client app is opened from a LAN IP instead of `localhost`, Next.js development mode requires `allowedDevOrigins` to include that origin so HMR and other dev assets are not blocked
 - Next.js components should default to server components; `'use client'` should only be added when a component actually needs client-only behavior
+- responsive client components that branch between materially different layouts at first render should avoid `useMediaQuery(..., { noSsr: true })` unless the server and client fallback markup stay identical, because it can trigger hydration mismatches in Next.js
 - the client app now includes a shared top-level navigation bar that renders on every page from the root layout
 - the shared top-level navigation bar currently includes a home link labeled `TechUp` plus a `/learning` link labeled `My Learning`
 - the shared top-level navigation bar lives inside the app theme provider and above the learning task context provider in `client/src/app/layout.tsx`
+- the client home page now hosts a first React Flow skill-tree prototype for an entry-level frontend developer role
+- the current skill-tree prototype intentionally models only big-ticket skills such as HTML, CSS, JavaScript, TypeScript, React, accessibility, tooling, APIs, and testing
+- the current skill-tree prototype is read-only and is intended as a visual direction for future AI-generated requirement parsing
+- the home page skill-tree surface now uses the available viewport beneath the shared navbar rather than a marketing-style intro layout
+- the home page skill-tree surface is intended to fill the full available width and height beneath the shared navbar without extra outer card styling
+- the current skill-tree info panel now lives in a sidebar intended to become the future job-description and AI-chat area
+- the skill-tree sidebar is closed by default on mobile and opens as a full-width overlay above the graph content
+- the mobile skill-tree sidebar should open as a full-width overlay below the shared navbar, and its shared toggle button should stay pinned in the overlay's top-right corner while open so it remains reachable on small screens without clipping the sidebar content
+- the shared skill-tree sidebar toggle icon should reflect open and closed state on both mobile and `smd`+ layouts, not just the accessible label text
+- the skill-tree sidebar is shown by default on `smd` and above, shares page width with the graph, and the graph area grows or shrinks when the sidebar is toggled
+- the skill-tree graph should refit its viewport after `smd`+ sidebar open or close transitions so the visible skill-tree content responds to the resized desktop/tablet content area
 - the learning page now uses its `onDragEnd` handler to move a dragged learning task into a new swim lane by dispatching `update_learning_tasks` with the task's updated `swimlane`
 - current learning page unit tests now cover drag-end task movement plus guard cases for canceled drags and invalid swim lane targets
 
@@ -220,9 +235,21 @@ These details are not defined yet:
 - Recorded that the client app now renders a shared top-level navigation bar from the root layout on every page.
 - Recorded that the current top-level navigation bar includes `TechUp` home navigation and a `My Learning` link to `/learning`.
 - Recorded the Next.js preference to keep components as server components by default and only add `'use client'` when client-only behavior is required.
+- Installed `@xyflow/react` for the new skill-tree prototype on the client home page.
+- Recorded that the home page now renders a React Flow skill-path example for an entry-level frontend developer role.
+- Recorded that the first skill-tree prototype is focused on high-level prerequisite skills rather than detailed subtopics.
+- Recorded that the home page now gives the skill-tree surface the full usable viewport height below the shared navbar.
+- Recorded that the skill-tree surface should use the full available workspace beneath the navbar without extra outer padding, rounded corners, or decorative shell styling.
+- Recorded that the current skill-tree info panel now lives in a responsive sidebar meant for future job-description and AI-chat content.
+- Recorded that the sidebar is mobile-overlay/full-width by default and desktop split-panel on `smd` and above.
 - Recorded that the learning page `onDragEnd` handler now dispatches swimlane changes for valid drag targets.
 - Recorded that learning page unit tests now cover drag-end updates and drag guard cases.
 - Recorded the responsive add-task entry pattern: desktop/tablet top-right button plus mobile floating action button.
+- Recorded that the client app is now on MUI 9 drawer typings, where `Drawer` paper styling should be configured through `slotProps.paper` rather than `PaperProps`.
+- Recorded that the skill-tree workspace should keep its initial responsive sidebar render hydration-safe by avoiding `useMediaQuery(..., { noSsr: true })` for mobile-versus-desktop branch selection.
+- Recorded that the skill-tree flow now refits its viewport after desktop and tablet sidebar width transitions so the visible graph area updates with the resized `smd`+ workspace.
+- Recorded that the mobile skill-tree drawer should stay offset below the shared navbar while keeping its toggle button fixed in the overlay's top-right corner so the close action stays on-screen without covering the first sidebar content.
+- Recorded that the shared skill-tree sidebar toggle icon should flip for both mobile and desktop open states so the visual control matches the current sidebar state.
 
 ### 2026-04-18
 

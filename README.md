@@ -24,6 +24,7 @@ The repository currently contains a `client` application that implements the lea
 Current learning-board capabilities include:
 
 - rendering a persistent top-level app navigation bar across routes
+- rendering a home-page React Flow prototype for AI-oriented skill-tree exploration
 - rendering five learning swim lanes
 - rendering learning task cards inside those lanes
 - opening the shared learning task modal from task cards and add-task controls
@@ -42,6 +43,7 @@ The current frontend stack includes:
 - `React 19`
 - `TypeScript`
 - `MUI`
+- `@xyflow/react`
 - `@dnd-kit/react`
 - `Jest` and React Testing Library
 - `pnpm`
