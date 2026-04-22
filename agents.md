@@ -94,11 +94,13 @@ Current frontend decision:
 - pull request CI is configured at the repository root with GitHub Actions so it can expand beyond the `client` app over time
 - the current pull request workflow runs the `client` unit test suite with `pnpm`
 - the current pull request workflow file is `.github/workflows/pull-request.yml`
-- the current pull request workflow runs on `opened`, `synchronize`, and `reopened` pull request events
+- the current pull request workflow runs on `opened`, `synchronize`, `reopened`, and `ready_for_review` pull request events
 - the current pull request workflow uses `ubuntu-latest`, `pnpm` version `10`, and `Node.js` version `22`
 - the current pull request workflow installs dependencies in the `client` directory with `pnpm install --frozen-lockfile`
-- the current pull request workflow runs `client-unit-tests` for pull requests regardless of target branch
-- the current pull request workflow runs a `client-audit` job in the `client` directory with `pnpm audit --audit-level high` only when the pull request targets `master`
+- the current pull request workflow skips draft pull requests so CI only runs after the pull request is ready for review
+- future pull request pipelines and workflows in this repository should also skip draft pull requests and only start when the pull request is ready for review
+- the current pull request workflow runs `client-unit-tests` for non-draft pull requests regardless of target branch
+- the current pull request workflow runs a `client-audit` job in the `client` directory with `pnpm audit --audit-level high` only when a non-draft pull request targets `master`
 - the current pull request workflow requires the `client-audit` job to pass before running `client-unit-tests` when the audit job runs, but still allows tests to run when the audit job is skipped on non-`master` targets
 - the current pull request workflow runs tests from the `client` directory with `pnpm exec jest --runInBand`
 - the repository now includes a root `.vscode/settings.json` that enables format-on-save and ESLint fix-on-save for the `client` app workspace
@@ -256,6 +258,8 @@ These details are not defined yet:
 - Recorded that pull request CI should continue running `client-unit-tests` for pull requests to any target branch.
 - Recorded that pull request CI now starts with a `client-audit` job only for pull requests targeting `master`, where it runs `pnpm audit --audit-level high` in `client`.
 - Recorded that `client-unit-tests` now wait for the audit job only when that audit runs, while still running normally when the audit is skipped on non-`master` pull requests.
+- Recorded that pull request CI should skip draft pull requests and instead start when the pull request becomes ready for review.
+- Recorded the standing repository rule that future pull request pipelines should also skip draft pull requests and wait for `ready_for_review`.
 
 ### 2026-04-18
 
