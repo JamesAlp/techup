@@ -12,7 +12,7 @@ jobs:
   client-outdated-report:
     name: Client Outdated Report
     runs-on: ubuntu-latest
-    if: github.event.pull_request.draft == false && github.event.pull_request.base.ref == 'master'
+    if: github.event.pull_request.draft == false
 
     defaults:
       run:
@@ -38,7 +38,16 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Generate outdated dependency report
-        run: pnpm outdated --format json > outdated-report.json
+        shell: bash
+        run: |
+          set +e
+          pnpm outdated --format json > outdated-report.json
+          status=$?
+          set -e
+
+          if [ "$status" -gt 1 ]; then
+            exit "$status"
+          fi
 
       - name: Upload outdated dependency report
         uses: actions/upload-artifact@v4
