@@ -8,9 +8,43 @@ on:
       - reopened
 
 jobs:
+  client-audit:
+    name: Client Audit
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.base.ref == 'master'
+
+    defaults:
+      run:
+        working-directory: client
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: client/pnpm-lock.yaml
+
+      - name: Install client dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run client dependency audit
+        run: pnpm audit --audit-level high
+
   client-unit-tests:
     name: Client Unit Tests
     runs-on: ubuntu-latest
+    needs:
+      - client-audit
+    if: always() && (needs.client-audit.result == 'success' || needs.client-audit.result == 'skipped')
 
     defaults:
       run:

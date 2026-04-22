@@ -103,8 +103,11 @@ The current workflow:
 - uses `ubuntu-latest`
 - uses `pnpm` version `10`
 - uses `Node.js` version `22`
+- runs the client unit test suite on pull requests regardless of target branch
+- runs a `pnpm audit --audit-level high` job in `client/` only for pull requests targeting `master`
+- blocks the `master` pull request workflow when the client audit finds any vulnerability at `high` severity or above
 - installs dependencies in `client/` with `pnpm install --frozen-lockfile`
-- runs the client unit test suite with `pnpm exec jest --runInBand`
+- runs the client unit test suite with `pnpm exec jest --runInBand`, waiting for the audit job to pass when the pull request targets `master`
 
 ## Accessibility
 
