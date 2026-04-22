@@ -97,6 +97,9 @@ Current frontend decision:
 - the current pull request workflow runs on `opened`, `synchronize`, and `reopened` pull request events
 - the current pull request workflow uses `ubuntu-latest`, `pnpm` version `10`, and `Node.js` version `22`
 - the current pull request workflow installs dependencies in the `client` directory with `pnpm install --frozen-lockfile`
+- the current pull request workflow runs `client-unit-tests` for pull requests regardless of target branch
+- the current pull request workflow runs a `client-audit` job in the `client` directory with `pnpm audit --audit-level high` only when the pull request targets `master`
+- the current pull request workflow requires the `client-audit` job to pass before running `client-unit-tests` when the audit job runs, but still allows tests to run when the audit job is skipped on non-`master` targets
 - the current pull request workflow runs tests from the `client` directory with `pnpm exec jest --runInBand`
 - the repository now includes a root `.vscode/settings.json` that enables format-on-save and ESLint fix-on-save for the `client` app workspace
 - internal swim lane naming should use `LearningSwimlane` terminology instead of `Droppable`, and component prop types should use the `LearningSwimlaneProps` name
@@ -250,6 +253,9 @@ These details are not defined yet:
 - Recorded that the skill-tree flow now refits its viewport after desktop and tablet sidebar width transitions so the visible graph area updates with the resized `smd`+ workspace.
 - Recorded that the mobile skill-tree drawer should stay offset below the shared navbar while keeping its toggle button fixed in the overlay's top-right corner so the close action stays on-screen without covering the first sidebar content.
 - Recorded that the shared skill-tree sidebar toggle icon should flip for both mobile and desktop open states so the visual control matches the current sidebar state.
+- Recorded that pull request CI should continue running `client-unit-tests` for pull requests to any target branch.
+- Recorded that pull request CI now starts with a `client-audit` job only for pull requests targeting `master`, where it runs `pnpm audit --audit-level high` in `client`.
+- Recorded that `client-unit-tests` now wait for the audit job only when that audit runs, while still running normally when the audit is skipped on non-`master` pull requests.
 
 ### 2026-04-18
 
