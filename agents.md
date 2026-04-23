@@ -103,8 +103,14 @@ Current frontend decision:
 - the current pull request workflow runs a `client-outdated-report` job for non-draft pull requests regardless of target branch, generating `outdated-report.json` from `pnpm outdated --format json`, uploading it as an artifact, and publishing a Markdown summary on the workflow run page
 - the current pull request workflow must treat `pnpm outdated` exit codes for found updates as report output rather than a CI failure so the outdated-report artifact still uploads
 - the current pull request workflow runs a `client-audit` job in the `client` directory with `pnpm audit --audit-level high` only when a non-draft pull request targets `master`
+- the repository now also includes a `server` app scaffolded with NestJS and `pnpm`
+- the `server` app now has its own scoped `.gitignore` covering Nest/Node generated output, local env files, logs, and common cache files
+- the `server` app now has its own ESLint and Prettier configuration, with `pnpm lint`, `pnpm lint:fix`, `pnpm format`, and `pnpm format:check` scripts for NestJS backend work
+- the root `.vscode/settings.json` now treats both `client` and `server` as ESLint working directories so save-time lint fixes apply in either app
 - the current pull request workflow requires the `client-audit` job to pass before running `client-unit-tests` when the audit job runs, but still allows tests to run when the audit job is skipped on non-`master` targets
 - the current pull request workflow runs tests from the `client` directory with `pnpm exec jest --runInBand`
+- the current pull request workflow also runs a separate `server-unit-tests` job from the `server` directory with `pnpm exec jest --runInBand`
+- the current pull request workflow includes a final `unit-test-gate` job that only passes when both client and server unit test jobs succeed
 - the repository now includes a root `.vscode/settings.json` that enables format-on-save and ESLint fix-on-save for the `client` app workspace
 - internal swim lane naming should use `LearningSwimlane` terminology instead of `Droppable`, and component prop types should use the `LearningSwimlaneProps` name
 - internal task naming should use `LearningTask` terminology instead of `Draggable`
@@ -221,6 +227,12 @@ These details are not defined yet:
 
 ## Change Log
 
+### 2026-04-22
+
+- Added a separate `server-unit-tests` pull request CI job that installs dependencies in `server/` and runs `pnpm exec jest --runInBand`.
+- Recorded that pull request unit test validation now runs in separate client and server jobs.
+- Added a final `unit-test-gate` pull request CI job that only passes when both unit test jobs succeed.
+
 ### 2026-04-21
 
 - Installed `@mui/icons-material` in the `client` app with `pnpm`.
@@ -265,6 +277,11 @@ These details are not defined yet:
 - Recorded that pull request CI now includes a parallel `client-outdated-report` job for non-draft pull requests regardless of target branch, generating and uploading a `pnpm outdated --format json` report artifact.
 - Recorded that the `client-outdated-report` job now captures `pnpm outdated` output without failing the workflow when outdated packages are merely detected, while still failing on unexpected command errors.
 - Recorded that the `client-outdated-report` job now also publishes a human-readable Markdown summary on the workflow run page using `GITHUB_STEP_SUMMARY`.
+- Recorded that the repository now has a new NestJS-based `server` folder managed with `pnpm`.
+- Added a scoped `server/.gitignore` for generated dependencies, build output, coverage output, env files, logs, and local cache files.
+- Added a scoped ESLint config plus Prettier config for the NestJS `server` app, along with separate lint-check, lint-fix, format, and format-check scripts.
+- Updated the root VS Code workspace settings so both `client` and `server` participate in the repo's save-time ESLint workflow.
+- Updated the root `README.md` to document the new `server` app, its stack, and its install/lint/run commands.
 
 ### 2026-04-18
 

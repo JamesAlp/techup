@@ -1,0 +1,30 @@
+# dependencies
+/node_modules
+
+# build output
+/dist
+/*.tsbuildinfo
+
+# testing
+/coverage
+/.nyc_output
+
+# environment files
+.env
+.env.*
+!.env.example
+
+# logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# tooling caches
+.eslintcache
+.cache
+
+# editor and OS files
+.DS_Store
+Thumbs.db

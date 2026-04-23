@@ -19,7 +19,7 @@ Update this file when appropriate, including changes to:
 
 ## Current Status
 
-The repository currently contains a `client` application that implements the learning board UI.
+The repository currently contains a `client` application for the learning board UI and a scaffolded `server` application for the backend API.
 
 Current learning-board capabilities include:
 
@@ -48,33 +48,63 @@ The current frontend stack includes:
 - `Jest` and React Testing Library
 - `pnpm`
 
+The current backend stack includes:
+
+- `NestJS`
+- `TypeScript`
+- `ESLint`
+- `Prettier`
+- `Jest`
+- `pnpm`
+
 ## Repository Structure
 
 Current top-level structure:
 
 - `client/` - Next.js frontend application
+- `server/` - NestJS backend application
 - `.github/workflows/` - GitHub Actions workflow definitions
 - `agents.md` - living project memory for agent collaboration
 
 ## Getting Started
 
-Install dependencies:
+Install client dependencies:
 
 ```bash
 cd client
 pnpm install
 ```
 
-Start the development server:
+Start the client development server:
 
 ```bash
 pnpm dev
 ```
 
-Run unit tests:
+Run client unit tests:
 
 ```bash
 pnpm test
+```
+
+Install server dependencies:
+
+```bash
+cd server
+pnpm install
+```
+
+Start the server in watch mode:
+
+```bash
+pnpm start:dev
+```
+
+Run server lint and formatting checks:
+
+```bash
+pnpm lint
+pnpm format:check
 ```
 
 ## Testing
@@ -105,12 +135,15 @@ The current workflow:
 - uses `Node.js` version `22`
 - skips draft pull requests so CI only runs once the pull request is ready for review
 - future pull request pipelines in this repository should also skip draft pull requests and wait until `ready_for_review`
-- runs the client unit test suite on non-draft pull requests regardless of target branch
+- runs the client and server unit test suites as separate jobs on non-draft pull requests
+- exposes a final `Unit Test Gate` check that passes only when both unit test jobs succeed
 - runs a standalone `pnpm outdated --format json` job in `client/` only for pull requests targeting `master`, uploading the generated report as a workflow artifact
 - runs a `pnpm audit --audit-level high` job in `client/` only for pull requests targeting `master`
 - blocks the `master` pull request workflow when the client audit finds any vulnerability at `high` severity or above
 - installs dependencies in `client/` with `pnpm install --frozen-lockfile`
 - runs the client unit test suite with `pnpm exec jest --runInBand`, waiting for the audit job to pass when the pull request targets `master`
+- installs dependencies in `server/` with `pnpm install --frozen-lockfile`
+- runs the server unit test suite with `pnpm exec jest --runInBand`
 
 ## Accessibility
 
