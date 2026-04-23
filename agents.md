@@ -106,6 +106,10 @@ Current frontend decision:
 - the repository now also includes a `server` app scaffolded with NestJS and `pnpm`
 - the `server` app now has its own scoped `.gitignore` covering Nest/Node generated output, local env files, logs, and common cache files
 - the `server` app now has its own ESLint and Prettier configuration, with `pnpm lint`, `pnpm lint:fix`, `pnpm format`, and `pnpm format:check` scripts for NestJS backend work
+- the current NestJS server bootstraps `AppModule` from `server/src/main.ts` and listens on `process.env.PORT`
+- the current NestJS server loads environment variables globally through `ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' })`
+- the current NestJS server scaffold exposes a starter `GET /` endpoint that returns `Hello World!`
+- the current NestJS server scaffold includes an e2e test that verifies `GET /` returns `Hello World!`
 - the root `.vscode/settings.json` now treats both `client` and `server` as ESLint working directories so save-time lint fixes apply in either app
 - the current pull request workflow requires the `client-audit` job to pass before running `client-unit-tests` when the audit job runs, but still allows tests to run when the audit job is skipped on non-`master` targets
 - the current pull request workflow runs tests from the `client` directory with `pnpm exec jest --runInBand`
@@ -173,6 +177,10 @@ Current frontend decision:
 Current project-management link:
 
 - TechUp YouTrack project: `https://techup.youtrack.cloud/projects/TEC`
+- the user may sometimes ask for a knowledge-base article entry intended to be tracked in YouTrack
+- when asked for a knowledge-base article, draft it in YouTrack article formatting by default and include suggested tags
+- YouTrack knowledge-base articles should stay appropriately high-level by default, especially for app- or system-level topics, and should avoid exhaustive file-by-file inventories unless the user asks for that depth
+- the agent should be ready to generate knowledge-base documentation for the repository's NestJS `server` app when requested
 
 ## Domain Framing
 
@@ -229,6 +237,12 @@ These details are not defined yet:
 
 ### 2026-04-22
 
+- Recorded the user preference that YouTrack knowledge-base articles for large topics should stay concise and high-level instead of enumerating every file or implementation detail by default.
+- Recorded that knowledge-base article requests should default to YouTrack article formatting rather than generic Markdown.
+- Recorded the current NestJS server scaffold details: global `.env` config loading, `PORT`-based bootstrap, and a starter `GET /` route returning `Hello World!`.
+- Recorded that the NestJS server scaffold includes an e2e test covering the starter `GET /` response.
+- Added a project-memory directive that YouTrack knowledge-base article drafts may be requested, should be written in a YouTrack-friendly format, and should include suggested tags.
+- Recorded that the agent should be ready to generate a knowledge-base article for the NestJS `server` app when asked.
 - Added a separate `server-unit-tests` pull request CI job that installs dependencies in `server/` and runs `pnpm exec jest --runInBand`.
 - Recorded that pull request unit test validation now runs in separate client and server jobs.
 - Added a final `unit-test-gate` pull request CI job that only passes when both unit test jobs succeed.
