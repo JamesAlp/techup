@@ -49,6 +49,49 @@ jobs:
             exit "$status"
           fi
 
+      - name: Add outdated dependency summary
+        shell: bash
+        run: |
+          node <<'EOF'
+          const fs = require('node:fs');
+
+          const reportPath = 'outdated-report.json';
+          const summaryPath = process.env.GITHUB_STEP_SUMMARY;
+          const rawReport = fs.readFileSync(reportPath, 'utf8').trim();
+          const report = rawReport ? JSON.parse(rawReport) : {};
+          const entries = Object.entries(report).sort(([leftName], [rightName]) =>
+            leftName.localeCompare(rightName),
+          );
+
+          const escapeCell = (value) => String(value ?? '-').replace(/\|/g, '\\|');
+          const lines = ['## Client outdated dependency report', ''];
+
+          if (entries.length === 0) {
+            lines.push('No outdated client dependencies were found.');
+          } else {
+            lines.push(
+              `Found ${entries.length} outdated client ${
+                entries.length === 1 ? 'dependency' : 'dependencies'
+              }. Download the \`client-outdated-report\` artifact for the raw JSON output.`,
+            );
+            lines.push('');
+            lines.push('| Package | Dependency type | Current | Wanted | Latest |');
+            lines.push('| --- | --- | --- | --- | --- |');
+
+            for (const [packageName, details] of entries) {
+              lines.push(
+                `| \`${escapeCell(packageName)}\` | ${escapeCell(
+                  details.dependencyType,
+                )} | \`${escapeCell(details.current)}\` | \`${escapeCell(
+                  details.wanted,
+                )}\` | \`${escapeCell(details.latest)}\` |`,
+              );
+            }
+          }
+
+          fs.appendFileSync(summaryPath, `${lines.join('\n')}\n`);
+          EOF
+
       - name: Upload outdated dependency report
         uses: actions/upload-artifact@v4
         with:
