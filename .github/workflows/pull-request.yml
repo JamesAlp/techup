@@ -37,11 +37,11 @@ jobs:
       - name: Install client dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Generate outdated dependency report
+      - name: Generate outdated client dependency report
         shell: bash
         run: |
           set +e
-          pnpm outdated --format json > outdated-report.json
+          pnpm outdated --format json > outdated-client-report.json
           status=$?
           set -e
 
@@ -50,6 +50,95 @@ jobs:
           fi
 
       - name: Add outdated dependency summary
+        shell: bash
+        run: |
+          node <<'EOF'
+          const fs = require('node:fs');
+
+          const reportPath = 'outdated-report.json';
+          const summaryPath = process.env.GITHUB_STEP_SUMMARY;
+          const rawReport = fs.readFileSync(reportPath, 'utf8').trim();
+          const report = rawReport ? JSON.parse(rawReport) : {};
+          const entries = Object.entries(report).sort(([leftName], [rightName]) =>
+            leftName.localeCompare(rightName),
+          );
+
+          const escapeCell = (value) => String(value ?? '-').replace(/\|/g, '\\|');
+          const lines = ['## Client outdated dependency report', ''];
+
+          if (entries.length === 0) {
+            lines.push('No outdated client dependencies were found.');
+          } else {
+            lines.push(
+              `Found ${entries.length} outdated client ${
+                entries.length === 1 ? 'dependency' : 'dependencies'
+              }. Download the \`client-outdated-report\` artifact for the raw JSON output.`,
+            );
+            lines.push('');
+            lines.push('| Package | Dependency type | Current | Wanted | Latest |');
+            lines.push('| --- | --- | --- | --- | --- |');
+
+            for (const [packageName, details] of entries) {
+              lines.push(
+                `| \`${escapeCell(packageName)}\` | ${escapeCell(
+                  details.dependencyType,
+                )} | \`${escapeCell(details.current)}\` | \`${escapeCell(
+                  details.wanted,
+                )}\` | \`${escapeCell(details.latest)}\` |`,
+              );
+            }
+          }
+
+          fs.appendFileSync(summaryPath, `${lines.join('\n')}\n`);
+          EOF
+
+      - name: Upload outdated dependency report
+        uses: actions/upload-artifact@v4
+        with:
+          name: client-outdated-report
+          path: client/outdated-report.json
+
+  server-outdated-report:
+    name: Server Outdated Report
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false && github.event.pull_request.base.ref == 'master'
+
+    defaults:
+      run:
+        working-directory: server
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: server/pnpm-lock.yaml
+
+      - name: Install server dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Generate outdated dependency report
+        shell: bash
+        run: |
+          set +e
+          pnpm outdated --format json > outdated-server-report.json
+          status=$?
+          set -e
+
+          if [ "$status" -gt 1 ]; then
+            exit "$status"
+          fi
+
+      - name: Add outdated server dependency summary
         shell: bash
         run: |
           node <<'EOF'
@@ -129,6 +218,37 @@ jobs:
       - name: Run client dependency audit
         run: pnpm audit --audit-level high
 
+  server-audit:
+    name: Server Audit
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false && github.event.pull_request.base.ref == 'master'
+
+    defaults:
+      run:
+        working-directory: server
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: server/pnpm-lock.yaml
+
+      - name: Install server dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run server dependency audit
+        run: pnpm audit --audit-level high
+
   client-unit-tests:
     name: Client Unit Tests
     runs-on: ubuntu-latest
@@ -165,7 +285,9 @@ jobs:
   server-unit-tests:
     name: Server Unit Tests
     runs-on: ubuntu-latest
-    if: github.event.pull_request.draft == false
+    needs:
+      - client-audit
+    if: github.event.pull_request.draft == false && always() && (needs.client-audit.result == 'success' || needs.client-audit.result == 'skipped')
 
     defaults:
       run:
