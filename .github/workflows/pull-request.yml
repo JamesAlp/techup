@@ -12,7 +12,7 @@ jobs:
   client-outdated-report:
     name: Client Outdated Report
     runs-on: ubuntu-latest
-    if: github.event.pull_request.draft == false
+    if: github.event.pull_request.draft == false && github.event.pull_request.base.ref == 'master'
 
     defaults:
       run:
