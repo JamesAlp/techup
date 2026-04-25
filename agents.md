@@ -121,6 +121,8 @@ Current frontend decision:
 - the current pull request workflow also runs a separate `server-unit-tests` job from the `server` directory with `pnpm exec jest --runInBand`
 - the current pull request workflow includes a final `unit-test-gate` job that only passes when both client and server unit test jobs succeed
 - the repository now includes a root `.vscode/settings.json` that enables format-on-save and ESLint fix-on-save for the `client` app workspace
+- the repository's top-level `scripts` folder now includes `scripts/run/dev` for dev startup helpers and `scripts/utility` for short Docker cleanup helpers intended to be run from the workspace root
+- the current Docker utility helpers are `scripts/utility/rm-containers.sh`, `scripts/utility/rm-images.sh`, `scripts/utility/rm-volumes.sh`, and `scripts/utility/rm-containers-volumes.sh`
 - internal swim lane naming should use `LearningSwimlane` terminology instead of `Droppable`, and component prop types should use the `LearningSwimlaneProps` name
 - internal task naming should use `LearningTask` terminology instead of `Draggable`
 - the current learning board page is using MUI layout primitives for its page shell, swimlanes, and task cards
@@ -244,6 +246,8 @@ These details are not defined yet:
 
 - Recorded the preference that `agents.md` should avoid low-level package-by-package and file-by-file bookkeeping unless a file is an important config, env, or similar long-lived project anchor.
 - Recorded that the current `server` dependency baseline now passes `pnpm audit --audit-level high` after clearing the flagged `multer`, `glob`, `picomatch`, and `minimatch` transitive vulnerabilities.
+- Added short shell helpers under `scripts/utility` for removing all Docker containers, images, and volumes from the workspace root.
+- Added a combined Docker utility helper under `scripts/utility` for removing all containers and volumes from the workspace root in one step.
 
 ### 2026-04-22
 
