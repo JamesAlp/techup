@@ -55,7 +55,7 @@ jobs:
           node <<'EOF'
           const fs = require('node:fs');
 
-          const reportPath = 'outdated-report.json';
+          const reportPath = 'outdated-client-report.json';
           const summaryPath = process.env.GITHUB_STEP_SUMMARY;
           const rawReport = fs.readFileSync(reportPath, 'utf8').trim();
           const report = rawReport ? JSON.parse(rawReport) : {};
@@ -95,8 +95,8 @@ jobs:
       - name: Upload outdated dependency report
         uses: actions/upload-artifact@v4
         with:
-          name: client-outdated-report
-          path: client/outdated-report.json
+          name: client-outdated-client-report
+          path: client/outdated-client-report.json
 
   server-outdated-report:
     name: Server Outdated Report
@@ -144,7 +144,7 @@ jobs:
           node <<'EOF'
           const fs = require('node:fs');
 
-          const reportPath = 'outdated-report.json';
+          const reportPath = 'outdated-server-report.json';
           const summaryPath = process.env.GITHUB_STEP_SUMMARY;
           const rawReport = fs.readFileSync(reportPath, 'utf8').trim();
           const report = rawReport ? JSON.parse(rawReport) : {};
@@ -184,8 +184,8 @@ jobs:
       - name: Upload outdated dependency report
         uses: actions/upload-artifact@v4
         with:
-          name: client-outdated-report
-          path: client/outdated-report.json
+          name: client-outdated-server-report
+          path: client/outdated-server-report.json
 
   client-audit:
     name: Client Audit

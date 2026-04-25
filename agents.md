@@ -18,6 +18,10 @@ Any agent working on this project must update `agents.md` whenever it learns som
 
 Do not wait for a major milestone. Update this file incrementally as new understanding emerges.
 
+Project-memory entries should prefer durable product, workflow, architecture, and technical-direction decisions over low-level package-by-package or file-by-file bookkeeping.
+
+Only record specific files when they are important long-lived entry points, configuration surfaces, environment files, or similarly meaningful project anchors.
+
 ## Current Project Summary
 
 TechUp is starting as a lightweight task-management app focused on personal growth and skill development.
@@ -110,6 +114,7 @@ Current frontend decision:
 - the current NestJS server loads environment variables globally through `ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' })`
 - the current NestJS server scaffold exposes a starter `GET /` endpoint that returns `Hello World!`
 - the current NestJS server scaffold includes an e2e test that verifies `GET /` returns `Hello World!`
+- the current `server` dependency baseline clears `pnpm audit --audit-level high`, including the previously flagged `multer`, `glob`, `picomatch`, and `minimatch` transitive vulnerabilities
 - the root `.vscode/settings.json` now treats both `client` and `server` as ESLint working directories so save-time lint fixes apply in either app
 - the current pull request workflow requires the `client-audit` job to pass before running `client-unit-tests` when the audit job runs, but still allows tests to run when the audit job is skipped on non-`master` targets
 - the current pull request workflow runs tests from the `client` directory with `pnpm exec jest --runInBand`
@@ -234,6 +239,11 @@ These details are not defined yet:
 - reporting or analytics requirements
 
 ## Change Log
+
+### 2026-04-25
+
+- Recorded the preference that `agents.md` should avoid low-level package-by-package and file-by-file bookkeeping unless a file is an important config, env, or similar long-lived project anchor.
+- Recorded that the current `server` dependency baseline now passes `pnpm audit --audit-level high` after clearing the flagged `multer`, `glob`, `picomatch`, and `minimatch` transitive vulnerabilities.
 
 ### 2026-04-22
 
