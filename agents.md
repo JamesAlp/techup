@@ -18,6 +18,10 @@ Any agent working on this project must update `agents.md` whenever it learns som
 
 Do not wait for a major milestone. Update this file incrementally as new understanding emerges.
 
+Project-memory entries should prefer durable product, workflow, architecture, and technical-direction decisions over low-level package-by-package or file-by-file bookkeeping.
+
+Only record specific files when they are important long-lived entry points, configuration surfaces, environment files, or similarly meaningful project anchors.
+
 ## Current Project Summary
 
 TechUp is starting as a lightweight task-management app focused on personal growth and skill development.
@@ -103,8 +107,19 @@ Current frontend decision:
 - the current pull request workflow runs a `client-outdated-report` job for non-draft pull requests regardless of target branch, generating `outdated-report.json` from `pnpm outdated --format json`, uploading it as an artifact, and publishing a Markdown summary on the workflow run page
 - the current pull request workflow must treat `pnpm outdated` exit codes for found updates as report output rather than a CI failure so the outdated-report artifact still uploads
 - the current pull request workflow runs a `client-audit` job in the `client` directory with `pnpm audit --audit-level high` only when a non-draft pull request targets `master`
+- the repository now also includes a `server` app scaffolded with NestJS and `pnpm`
+- the `server` app now has its own scoped `.gitignore` covering Nest/Node generated output, local env files, logs, and common cache files
+- the `server` app now has its own ESLint and Prettier configuration, with `pnpm lint`, `pnpm lint:fix`, `pnpm format`, and `pnpm format:check` scripts for NestJS backend work
+- the current NestJS server bootstraps `AppModule` from `server/src/main.ts` and listens on `process.env.PORT`
+- the current NestJS server loads environment variables globally through `ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' })`
+- the current NestJS server scaffold exposes a starter `GET /` endpoint that returns `Hello World!`
+- the current NestJS server scaffold includes an e2e test that verifies `GET /` returns `Hello World!`
+- the current `server` dependency baseline clears `pnpm audit --audit-level high`, including the previously flagged `multer`, `glob`, `picomatch`, and `minimatch` transitive vulnerabilities
+- the root `.vscode/settings.json` now treats both `client` and `server` as ESLint working directories so save-time lint fixes apply in either app
 - the current pull request workflow requires the `client-audit` job to pass before running `client-unit-tests` when the audit job runs, but still allows tests to run when the audit job is skipped on non-`master` targets
 - the current pull request workflow runs tests from the `client` directory with `pnpm exec jest --runInBand`
+- the current pull request workflow also runs a separate `server-unit-tests` job from the `server` directory with `pnpm exec jest --runInBand`
+- the current pull request workflow includes a final `unit-test-gate` job that only passes when both client and server unit test jobs succeed
 - the repository now includes a root `.vscode/settings.json` that enables format-on-save and ESLint fix-on-save for the `client` app workspace
 - internal swim lane naming should use `LearningSwimlane` terminology instead of `Droppable`, and component prop types should use the `LearningSwimlaneProps` name
 - internal task naming should use `LearningTask` terminology instead of `Draggable`
@@ -167,6 +182,10 @@ Current frontend decision:
 Current project-management link:
 
 - TechUp YouTrack project: `https://techup.youtrack.cloud/projects/TEC`
+- the user may sometimes ask for a knowledge-base article entry intended to be tracked in YouTrack
+- when asked for a knowledge-base article, draft it in YouTrack article formatting by default and include suggested tags
+- YouTrack knowledge-base articles should stay appropriately high-level by default, especially for app- or system-level topics, and should avoid exhaustive file-by-file inventories unless the user asks for that depth
+- the agent should be ready to generate knowledge-base documentation for the repository's NestJS `server` app when requested
 
 ## Domain Framing
 
@@ -221,6 +240,23 @@ These details are not defined yet:
 
 ## Change Log
 
+### 2026-04-25
+
+- Recorded the preference that `agents.md` should avoid low-level package-by-package and file-by-file bookkeeping unless a file is an important config, env, or similar long-lived project anchor.
+- Recorded that the current `server` dependency baseline now passes `pnpm audit --audit-level high` after clearing the flagged `multer`, `glob`, `picomatch`, and `minimatch` transitive vulnerabilities.
+
+### 2026-04-22
+
+- Recorded the user preference that YouTrack knowledge-base articles for large topics should stay concise and high-level instead of enumerating every file or implementation detail by default.
+- Recorded that knowledge-base article requests should default to YouTrack article formatting rather than generic Markdown.
+- Recorded the current NestJS server scaffold details: global `.env` config loading, `PORT`-based bootstrap, and a starter `GET /` route returning `Hello World!`.
+- Recorded that the NestJS server scaffold includes an e2e test covering the starter `GET /` response.
+- Added a project-memory directive that YouTrack knowledge-base article drafts may be requested, should be written in a YouTrack-friendly format, and should include suggested tags.
+- Recorded that the agent should be ready to generate a knowledge-base article for the NestJS `server` app when asked.
+- Added a separate `server-unit-tests` pull request CI job that installs dependencies in `server/` and runs `pnpm exec jest --runInBand`.
+- Recorded that pull request unit test validation now runs in separate client and server jobs.
+- Added a final `unit-test-gate` pull request CI job that only passes when both unit test jobs succeed.
+
 ### 2026-04-21
 
 - Installed `@mui/icons-material` in the `client` app with `pnpm`.
@@ -265,6 +301,11 @@ These details are not defined yet:
 - Recorded that pull request CI now includes a parallel `client-outdated-report` job for non-draft pull requests regardless of target branch, generating and uploading a `pnpm outdated --format json` report artifact.
 - Recorded that the `client-outdated-report` job now captures `pnpm outdated` output without failing the workflow when outdated packages are merely detected, while still failing on unexpected command errors.
 - Recorded that the `client-outdated-report` job now also publishes a human-readable Markdown summary on the workflow run page using `GITHUB_STEP_SUMMARY`.
+- Recorded that the repository now has a new NestJS-based `server` folder managed with `pnpm`.
+- Added a scoped `server/.gitignore` for generated dependencies, build output, coverage output, env files, logs, and local cache files.
+- Added a scoped ESLint config plus Prettier config for the NestJS `server` app, along with separate lint-check, lint-fix, format, and format-check scripts.
+- Updated the root VS Code workspace settings so both `client` and `server` participate in the repo's save-time ESLint workflow.
+- Updated the root `README.md` to document the new `server` app, its stack, and its install/lint/run commands.
 
 ### 2026-04-18
 
