@@ -5,3 +5,5 @@ services:
       dockerfile: ./Dockerfile.dev
     ports:
       - "3000:3000"
+    volumes:
+      - ./client/src:/usr/app/client/src
