@@ -1,4 +1,15 @@
 services:
+  nginx:
+    env_file:
+     - .env.development
+    image: nginx:1.25.0
+    environment:
+      - LOCAL_IP=${LOCAL_IP}
+    volumes:
+      - ./nginx/default.conf.template:/etc/nginx/templates/default.conf.template:ro
+    ports:
+      - "8080:80"
+
   client:
     env_file:
       - .env.development
@@ -10,13 +21,12 @@ services:
       - /usr/app/client/node_modules
       - /usr/app/client/.next
 
-  nginx:
+  server:
     env_file:
-     - .env.development
-    image: nginx:1.25.0
-    environment:
-      - LOCAL_IP=${LOCAL_IP}
+      - .env.development
+    build:
+      context: ./server
+      dockerfile: ./Dockerfile.dev
     volumes:
-      - ./nginx/default.conf.template:/etc/nginx/templates/default.conf.template:ro
-    ports:
-      - "8080:80"
+      - ./server:/usr/app/server
+      - /usr/app/server/node_modules

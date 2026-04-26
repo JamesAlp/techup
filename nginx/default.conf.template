@@ -2,6 +2,10 @@ upstream client_upstream {
   server client:3000;
 }
 
+upstream server_upstream {
+  server server:3001;
+}
+
 server {
   listen 80;
   server_name ${LOCAL_IP}; # Your local network IP
@@ -42,5 +46,23 @@ server {
     # 8. Disable caching for dev-mode assets
     # Ensures you aren't seeing old versions of your code during development.
     proxy_cache_bypass $http_upgrade;
+  }
+
+  location /api {
+    # 'server_upstream' is the name of the service in docker-compose.yml
+      # Optional: Strips '/api' prefix before passing to NestJS
+      # rewrite ^/api/(.*)$ /$1 break;
+      proxy_pass http://server_upstream;
+      
+      # Pass headers required for websockets/hot-reloading
+      proxy_set_header Host $host;
+      proxy_set_header X-Real-IP $remote_addr;
+      proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+      proxy_set_header X-Forwarded-Proto $scheme;
+
+      # WebSocket support (crucial for dev mode)
+      proxy_http_version 1.1;
+      proxy_set_header Upgrade $http_upgrade;
+      proxy_set_header Connection "upgrade";
   }
 }
